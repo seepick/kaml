@@ -1,5 +1,6 @@
-name: Release It
+name: Release Snapshot
 
+# https://github.com/seepick/kaml/actions/workflows/release-snapshot.yml
 on: workflow_dispatch
 #  release:
 #    types: [created]
