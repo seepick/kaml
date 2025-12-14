@@ -5,7 +5,7 @@ plugins {
     id("maven-publish")
     kotlin("jvm")
     id("com.github.ben-manes.versions")
-    id("io.kotest") // execute: jvmKotest
+    id("io.kotest") // execute: kotest
 //    id("org.jetbrains.kotlinx.kover")
 }
 
@@ -15,6 +15,10 @@ dependencies {
     testImplementation("io.kotest:kotest-framework-engine:6.0.7")
     testImplementation("io.kotest:kotest-assertions-core:6.0.7")
     testImplementation("io.kotest:kotest-property:6.0.7")
+}
+
+java {
+    withSourcesJar()
 }
 
 publishing {
