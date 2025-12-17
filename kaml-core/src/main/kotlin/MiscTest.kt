@@ -1,5 +1,4 @@
-package com.github.seepick.kaml.core
-
+import com.github.seepick.kaml.core.fixDashPlacement
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.equals.shouldBeEqual
 
