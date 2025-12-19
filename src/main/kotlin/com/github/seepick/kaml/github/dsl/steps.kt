@@ -33,7 +33,7 @@ class CheckoutDsl {
 
     fun build() = GenericStep(
         name = name,
-        uses = Images.checkout,
+        uses = Images.Github.checkout,
     )
 }
 
@@ -53,7 +53,7 @@ class SetupJavaDsl {
 
     fun build() = GenericStep(
         name = name,
-        uses = Images.setupJava,
+        uses = Images.Github.setupJava,
         withParams = mapOf(
             "distribution" to distribution.yamlValue,
             "java-version" to javaVersion.yamlValue,

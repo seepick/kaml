@@ -8,7 +8,6 @@ fun interface KamlYamlOutput {
     fun toYaml(): String
 }
 
-
 @DslMarker
 annotation class KamlDsl
 

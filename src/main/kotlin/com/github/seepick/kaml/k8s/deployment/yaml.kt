@@ -5,10 +5,7 @@ import com.github.seepick.kaml.k8s.toYamlPattern
 import com.github.seepick.kaml.yamlMap
 import com.github.seepick.kaml.yamlSeq
 
-fun K8sDeployment.toYamlString() = toYamlPattern(
-    buildMetadata = { metadata ->
-        yamlMap().add("name", metadata.name).build()
-    },
+fun Deployment.toYamlString() = toYamlPattern(
     buildSpec = { spec ->
         yamlMap().add("replicas", spec.replicas)
             .add(

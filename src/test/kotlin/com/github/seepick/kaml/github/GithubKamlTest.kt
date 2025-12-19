@@ -1,7 +1,6 @@
 package com.github.seepick.kaml.github
 
 import com.github.seepick.kaml.Kaml
-import com.github.seepick.kaml.github.domain.Images.checkout
 import com.github.seepick.kaml.github.domain.Runtime
 import com.github.seepick.kaml.github.dsl.github
 import com.github.seepick.kaml.github.yaml.toYamlString
@@ -15,7 +14,7 @@ class GithubKamlTest : DescribeSpec({
             Kaml.github {
                 name = "Continuous Integration"
             }.toYamlString() shouldContain
-                """
+                    """
                 name: Continuous Integration
                 """.trimIndent()
         }
@@ -27,7 +26,7 @@ class GithubKamlTest : DescribeSpec({
                     onPushBranches("main")
                 }
             }.toYamlString() shouldContain
-                """
+                    """
                 |on:
                 |  push:
                 |    branches:
@@ -40,7 +39,7 @@ class GithubKamlTest : DescribeSpec({
                     cron("0 0 * * *")
                 }
             }.toYamlString() shouldContain
-                """
+                    """
                 |on:
                 |  schedule:
                 |    - cron: "0 0 * * *"
@@ -53,7 +52,7 @@ class GithubKamlTest : DescribeSpec({
                     // support input values
                 }
             }.toYamlString() shouldContain
-                """
+                    """
                 |on:
                 |  workflow_dispatch:
                 """.trimMargin()
@@ -70,7 +69,7 @@ class GithubKamlTest : DescribeSpec({
                     }
                 }
             }.toYamlString() shouldContain
-                """
+                    """
                 |jobs:
                 |  jobId:
                 |    name: Job Name
@@ -89,7 +88,7 @@ class GithubKamlTest : DescribeSpec({
                     }
                 }
             }.toYamlString() shouldContain
-                """
+                    """
                 |    steps:
                 |      - name: Checkout Code
                 |        uses: "actions/checkout@v4"

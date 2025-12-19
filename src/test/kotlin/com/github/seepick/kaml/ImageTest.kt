@@ -6,24 +6,24 @@ import io.kotest.matchers.equals.shouldBeEqual
 class ImageTest : DescribeSpec({
     describe("format") {
         it("docker") {
-            GenericImage("group", "name", "version").format(ImageFormatter.Docker) shouldBeEqual "group:name:version"
+            Image("group", "name", "version").format(ImageFormatter.Docker) shouldBeEqual "group:name:version"
         }
         it("github") {
-            GenericImage("group", "name", "version").format(ImageFormatter.Github) shouldBeEqual "group/name@version"
+            Image("group", "name", "version").format(ImageFormatter.Github) shouldBeEqual "group/name@version"
         }
     }
     describe("parse") {
         it("name only") {
-            Image.parse("imageName", ImageFormatter.Github) shouldBeEqual GenericImage(name = "imageName")
+            Image.parse("imageName", ImageFormatter.Github) shouldBeEqual Image(name = "imageName")
         }
         it("group and name") {
-            Image.parse("group/name", ImageFormatter.Github) shouldBeEqual GenericImage(group = "group", name = "name")
+            Image.parse("group/name", ImageFormatter.Github) shouldBeEqual Image(group = "group", name = "name")
         }
         it("name and version") {
-            Image.parse("name@version", ImageFormatter.Github) shouldBeEqual GenericImage(name = "name", version = "version")
+            Image.parse("name@version", ImageFormatter.Github) shouldBeEqual Image(name = "name", version = "version")
         }
         it("group and name and version") {
-            Image.parse("group/name@version", ImageFormatter.Github) shouldBeEqual GenericImage(
+            Image.parse("group/name@version", ImageFormatter.Github) shouldBeEqual Image(
                 group = "group",
                 name = "name",
                 version = "version"

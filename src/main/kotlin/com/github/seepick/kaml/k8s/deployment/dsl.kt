@@ -1,17 +1,21 @@
 package com.github.seepick.kaml.k8s.deployment
 
-import com.github.seepick.kaml.Image
 import com.github.seepick.kaml.KamlDsl
+import com.github.seepick.kaml.k8s.ContainerDsl
+import com.github.seepick.kaml.k8s.GeneralMetadata
 import com.github.seepick.kaml.k8s.K8s
 import com.github.seepick.kaml.kerror
 
-fun K8s.deployment(code: DeploymentDsl.() -> Unit): K8sDeployment =
+fun K8s.deployment(code: DeploymentDsl.() -> Unit): Deployment =
     DeploymentDsl().apply(code).build()
 
 @KamlDsl
 class DeploymentDsl {
     /** The visible label of the deployment.*/
     var name = "default-deployment-name"
+
+    var labels = emptyMap<String, String>()
+
     /** Number of pods to run simultaneously. */
     var replicas = 1
     /** ? */
@@ -23,8 +27,8 @@ class DeploymentDsl {
         templateInstance = TemplateDsl().apply(code).build()
     }
 
-    internal fun build() = K8sDeployment(
-        metadata = DeploymentMetadata(name),
+    internal fun build() = Deployment(
+        metadata = GeneralMetadata(name, labels),
         spec = DeploymentSpec(
             replicas = replicas,
             selector = Selector(matchLabelsApp = selectorMatchLabelsApp),
@@ -49,20 +53,5 @@ class TemplateDsl {
     internal fun build() = Template(
         metadataLabelsApp = metadataLabelsApp,
         containers = containerList,
-    )
-}
-
-@KamlDsl
-class ContainerDsl {
-
-    /** Visible label for the container. */
-    var name = "container-default-name"
-
-    /** Container image, provided by a registry. */
-    var image: Image? = null
-
-    internal fun build() = Container(
-        image = image ?: kerror("container image not set for [$name]"),
-        name = name,
     )
 }

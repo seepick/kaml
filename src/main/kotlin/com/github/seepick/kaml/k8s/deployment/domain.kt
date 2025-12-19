@@ -2,23 +2,21 @@ package com.github.seepick.kaml.k8s.deployment
 
 import com.github.seepick.kaml.Image
 import com.github.seepick.kaml.KamlYamlOutput
-import com.github.seepick.kaml.k8s.K8sArtifact
+import com.github.seepick.kaml.k8s.GeneralMetadata
+import com.github.seepick.kaml.k8s.Manifest
 import com.github.seepick.kaml.k8s.ManifestKind
 
-data class K8sDeployment(
+data class Deployment(
     override val apiVersion: String = "apps/v1",
-    override val metadata: DeploymentMetadata,
+    override val metadata: GeneralMetadata,
     override val spec: DeploymentSpec,
-) : K8sArtifact<DeploymentMetadata, DeploymentSpec>, KamlYamlOutput {
+) : Manifest<DeploymentSpec>, KamlYamlOutput {
 
     override val kind: ManifestKind = ManifestKind.Deployment
 
     override fun toYaml() = toYamlString()
 }
 
-data class DeploymentMetadata(
-    val name: String,
-)
 
 data class DeploymentSpec(
     val replicas: Int,
@@ -31,6 +29,7 @@ data class Selector(
 )
 
 data class Template(
+    // FIXME refactor to Metadata.labels.Map<String, String>
     val metadataLabelsApp: String,
     val containers: List<Container>,
 )

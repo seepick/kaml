@@ -3,6 +3,7 @@ package com.github.seepick.kaml
 interface Image {
     val group: String?
     val name: String
+    /** or "latest" */
     val version: String?
 
     fun format(formatter: ImageFormatter = ImageFormatter.Docker): String =
@@ -10,7 +11,7 @@ interface Image {
             ?: "") + name + (version?.let { "${formatter.nameVersionSplitSymbol}$it" } ?: "")
 
     companion object {
-        fun parse(input: String, formatter: ImageFormatter): GenericImage {
+        fun parse(input: String, formatter: ImageFormatter): Image {
             val (group, rest) = if (input.contains(formatter.groupNameSplitSymbol)) {
                 val (group, rest) = input.split(formatter.groupNameSplitSymbol, limit = 3)
                 group to rest
@@ -20,10 +21,19 @@ interface Image {
                 name to version
             } else rest to null
 
-            return GenericImage(group, name, version)
+            return Image(group, name, version)
         }
+
+        operator fun invoke(group: String? = null, name: String, version: String? = null) =
+            GenericImage(group, name, version)
     }
 }
+
+data class GenericImage(
+    override val group: String?,
+    override val name: String,
+    override val version: String?,
+) : Image
 
 enum class ImageFormatter(
     val groupNameSplitSymbol: String,
@@ -32,9 +42,3 @@ enum class ImageFormatter(
     Github("/", "@"),
     Docker(":", ":"),
 }
-
-data class GenericImage(
-    override val group: String? = null,
-    override val name: String,
-    override val version: String? = null // or "latest"
-) : Image

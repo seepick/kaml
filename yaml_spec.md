@@ -5,13 +5,16 @@ Referring to: [Yaml spec 1.2.2](https://yaml.org/spec/1.2.2/)
 
 See cheatsheet: https://yaml.org/refcard.html
 
-Basics
+Remarks
 ------------------------------------------------------------------------------------------------------------------------
 
-Dictionaries are unordered, lists are ordered.
+* Dictionaries are unordered, lists are ordered.
+* Strings do not require quotation marks. Double quotes support escape sequences, single quotes not.
+* Children indentation size is insignificant (they have to be aligned though).
+* Remember: literal style `|` vs folded style `>`
 
-Strings do not require quotation marks.
-Double quotes support escape sequences, single quotes not:
+Basics
+------------------------------------------------------------------------------------------------------------------------
 
 ```yaml
 unicode: "Sosa did fine.\u263A"
