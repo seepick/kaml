@@ -1,6 +1,7 @@
 package com.github.seepick.kaml.github.yaml
 
 import com.amihaiemil.eoyaml.YamlMapping
+import com.github.seepick.kaml.ImageFormatter
 import com.github.seepick.kaml.addKeyValues
 import com.github.seepick.kaml.github.domain.GenericStep
 import com.github.seepick.kaml.github.domain.RunStep
@@ -10,7 +11,7 @@ import com.github.seepick.kaml.yamlMap
 internal fun stepYaml(step: Step): YamlMapping {
     val stepYaml = yamlMap().add("name", step.name)
     step.uses?.let { uses ->
-        stepYaml.add("uses", uses.coordinates)
+        stepYaml.add("uses", uses.format(ImageFormatter.Github))
     }
     when (step) {
         is GenericStep -> {

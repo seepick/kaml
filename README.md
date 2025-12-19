@@ -55,7 +55,7 @@ Then execute invoke the DSLs `.toYamlString()` and save it to a file of your cho
 Setup
 ------------------------------------------------------------------------------------------------------------------------
 
-Add the [JitPack](https://jitpack.io/) repository to your `settings.gradle.kts`:
+Add the JitPack repository to your `settings.gradle.kts`:
 
 ```kotlin
 @Suppress("UnstableApiUsage")
@@ -72,9 +72,11 @@ Add the dependency to your `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("com.github.seepick:kaml:1.0.0")
+    implementation("com.github.seepick:kaml:v1.0.0")
 }
 ```
+
+Lookup the latest version on the [JitPack website](https://jitpack.io/#seepick/kaml).
 
 Todos
 ------------------------------------------------------------------------------------------------------------------------

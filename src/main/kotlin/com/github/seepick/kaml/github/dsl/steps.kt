@@ -1,5 +1,6 @@
 package com.github.seepick.kaml.github.dsl
 
+import com.github.seepick.kaml.JavaVersion
 import com.github.seepick.kaml.github.domain.GenericStep
 import com.github.seepick.kaml.github.domain.Images
 import com.github.seepick.kaml.github.domain.RunStep

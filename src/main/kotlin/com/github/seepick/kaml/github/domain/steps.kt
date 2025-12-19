@@ -1,6 +1,6 @@
 package com.github.seepick.kaml.github.domain
 
-import com.github.seepick.kaml.github.domain.Image
+import com.github.seepick.kaml.Image
 
 sealed interface Step {
     val name: String

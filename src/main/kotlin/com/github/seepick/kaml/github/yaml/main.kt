@@ -18,5 +18,5 @@ fun GithubAction.toYamlString(): String {
 //    printer.print(map)
     return root.build().toString()
         .let(::fixDashPlacement) // GitHubAction, steps mapping-sequence with "-" prefixed
-        .also { println(it) }
+//        .also { println(it) }
 }

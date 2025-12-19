@@ -7,7 +7,7 @@ import com.github.seepick.kaml.github.domain.PermissionLevel
 import com.github.seepick.kaml.github.domain.Runtime
 import com.github.seepick.kaml.github.dsl.DemoEnvironmentNamespace
 import com.github.seepick.kaml.github.dsl.Distribution
-import com.github.seepick.kaml.github.dsl.JavaVersion
+import com.github.seepick.kaml.JavaVersion
 import com.github.seepick.kaml.github.dsl.github
 import com.github.seepick.kaml.github.yaml.toYamlString
 import com.github.seepick.kaml.loadTestResource

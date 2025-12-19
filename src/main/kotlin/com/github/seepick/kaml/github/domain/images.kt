@@ -1,18 +1,7 @@
 package com.github.seepick.kaml.github.domain
 
-interface Image {
-    val group: String?
-    val name: String
-    val version: String?
-
-    val coordinates get() = (group?.let { "$it/" } ?: "") + name + (version?.let { "@$it" } ?: "")
-}
-
-data class GenericImage(
-    override val group: String? = null,
-    override val name: String,
-    override val version: String? = null
-) : Image
+import com.github.seepick.kaml.GenericImage
+import com.github.seepick.kaml.Image
 
 data class RuntimeImage(val image: Image) : Image by image
 

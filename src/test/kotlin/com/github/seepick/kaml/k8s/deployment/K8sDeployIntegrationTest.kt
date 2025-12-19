@@ -1,5 +1,6 @@
 package com.github.seepick.kaml.k8s.deployment
 
+import com.github.seepick.kaml.GenericImage
 import com.github.seepick.kaml.Kaml
 import com.github.seepick.kaml.github.yaml.toYamlString
 import com.github.seepick.kaml.k8s.deployment.dsl.deployment
@@ -13,9 +14,18 @@ class K8sDeployIntegrationTest : StringSpec({
 
     fun loadResource(path: String): String = loadTestResource("/k8s/$path")
 
-    "deployment matches".config(enabled = false) {
-        // FIXME implement me
+    "deploy-simple.yaml" {
         Kaml.k8s.deployment {
+            name = "my-deployment"
+            replicas = 2
+            selectorMatchLabelsApp = "my-container"
+            template {
+                metadataLabelsApp = "my-container"
+                container {
+                    name = "my-container"
+                    image = GenericImage(name = "my-image", version = "latest")
+                }
+            }
         }.toYamlString() shouldBeEqual loadResource("deploy-simple.yaml")
     }
 })

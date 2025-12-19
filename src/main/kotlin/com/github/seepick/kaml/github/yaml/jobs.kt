@@ -1,6 +1,7 @@
 package com.github.seepick.kaml.github.yaml
 
 import com.amihaiemil.eoyaml.YamlMapping
+import com.github.seepick.kaml.ImageFormatter
 import com.github.seepick.kaml.addAllNodes
 import com.github.seepick.kaml.github.domain.Job
 import com.github.seepick.kaml.yamlMap
@@ -12,7 +13,7 @@ internal fun jobsYaml(jobs: List<Job>): YamlMapping {
     jobs.map { job ->
         val jobYaml = yamlMap()
             .add("name", job.name)
-            .add("runs-on", job.runsOn.image.coordinates)
+            .add("runs-on", job.runsOn.image.format())
         job.environment?.let { env ->
             jobYaml.add("environment", env.yamlValue)
         }

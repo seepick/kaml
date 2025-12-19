@@ -1,4 +1,4 @@
-package com.github.seepick.kaml.github.dsl
+package com.github.seepick.kaml
 
 @ConsistentCopyVisibility
 data class JavaVersion private constructor(val yamlValue: String) {
