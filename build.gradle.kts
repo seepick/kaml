@@ -14,7 +14,7 @@ repositories {
 }
 
 group = "com.github.seepick.kaml"
-version = "1.0.0-SNAPSHOT"
+version = "1.0.0"
 
 dependencies {
     implementation("com.amihaiemil.web:eo-yaml:8.0.6")
