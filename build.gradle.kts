@@ -1,5 +1,4 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
-import org.gradle.kotlin.dsl.withType
 
 plugins {
     kotlin("jvm")
@@ -14,7 +13,7 @@ repositories {
 }
 
 group = "com.github.seepick.kaml"
-version = "1.0.0"
+version = "1.1.0"
 
 dependencies {
     implementation("com.amihaiemil.web:eo-yaml:8.0.6")
