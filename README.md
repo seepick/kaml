@@ -3,7 +3,7 @@ Kaml
 
 A Kotlin Yaml generator offering a concise, typesafe, "auto-completable" DSL.
 
-Advantages:
+*Advantages*
 
 * *Typesafe*: no more "misplaced indentation" and hours/days of painstaking debugging
 * _*Auto-completable*_: lowering entrance barrier for new learning
@@ -13,6 +13,11 @@ Advantages:
     - inclusions are done in high-level kotlin DSL,
 * Low risk: Can be dropped at any time and continue hand writing
 * DSLs available for: OpenAPI, GitHub Actions, Azure DevOps, Kubernetes, OpenShift, ...
+
+_Note_: This is different then [charleskorn's KAML](https://github.com/charleskorn/kaml/), which intention was (it's not maintained anymore) to add YAML support to kotlinx.serialization.
+
+Howto
+------------------------------------------------------------------------------------------------------------------------
 
 Example of a GitHub action with Kaml:
 
@@ -45,32 +50,31 @@ githubKaml {
 }
 ```
 
-Deployed to [Github Packages](https://docs.github.com/en/packages):
+Then execute invoke the DSLs `.toYamlString()` and save it to a file of your choice.
+
+Setup
+------------------------------------------------------------------------------------------------------------------------
+
+Add the [JitPack](https://jitpack.io/) repository to your `settings.gradle.kts`:
 
 ```kotlin
-repositories {
-    maven {
-        url = uri("https://maven.pkg.github.com/seepick/kaml")
-        name = "KAML GitHubPackages"
-        credentials {
-            // search in local ~/gradle.properties or in env-vars:
-            username = project.findProperty("githubPackages.user") as? String ?: System.getenv("GITHUB_ACTOR")
-            password = project.findProperty("githubPackages.key") as? String ?: System.getenv("GITHUB_TOKEN")
-            // and in your GitHub Actions workflow:
-            // env:
-            //   GITHUB_ACTOR: ${{ github.actor }}
-            //   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        }
+@Suppress("UnstableApiUsage")
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        mavenCentral()
+        maven { url = uri("https://jitpack.io") }
     }
-}
-
-dependencies {
-    implementation("com.github.seepick.kaml:kaml-xxx:X.X.X")
 }
 ```
 
-Note: This is different then [charleskorn's KAML](https://github.com/charleskorn/kaml/), which intention was (it's not maintained anymore) to add YAML support to kotlinx.serialization.
+Add the dependency to your `build.gradle.kts`:
 
+```kotlin
+dependencies {
+    implementation("com.github.seepick:kaml:1.0.0")
+}
+```
 
 Todos
 ------------------------------------------------------------------------------------------------------------------------

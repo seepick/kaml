@@ -1,22 +1,17 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.gradle.kotlin.dsl.withType
-import java.net.URI
-
 
 plugins {
-    id("maven-publish")
     kotlin("jvm")
-    id("com.github.ben-manes.versions")
-    id("io.kotest") // execute: kotest
+    id("maven-publish")
+    id("io.kotest") // execute `gw kotest` instead `gw test`
 //    id("org.jetbrains.kotlinx.kover")
+    id("com.github.ben-manes.versions")
 }
 
-repositories {
-    mavenCentral()
-}
 
 group = "com.github.seepick.kaml"
-version = "1.0-SNAPSHOT"
+version = "1.0.0-SNAPSHOT"
 
 dependencies {
     implementation("com.amihaiemil.web:eo-yaml:8.0.6")
@@ -45,17 +40,6 @@ publishing {
                 name.set(project.name)
                 description.set("Part of the ${rootProject.name} project")
                 url.set("https://github.com/seepick/kaml") // TODO use github pages URL instead
-            }
-        }
-    }
-
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = URI("https://maven.pkg.github.com/seepick/kaml")
-            credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
             }
         }
     }
