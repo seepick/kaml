@@ -9,6 +9,9 @@ plugins {
     id("com.github.ben-manes.versions")
 }
 
+repositories {
+    mavenCentral()
+}
 
 group = "com.github.seepick.kaml"
 version = "1.0.0-SNAPSHOT"
@@ -17,13 +20,17 @@ dependencies {
     implementation("com.amihaiemil.web:eo-yaml:8.0.6")
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.13")
 
-    testImplementation("io.kotest:kotest-framework-engine:6.0.7")
-    testImplementation("io.kotest:kotest-assertions-core:6.0.7")
-    testImplementation("io.kotest:kotest-property:6.0.7")
+    listOf("framework-engine", "runner-junit5", "assertions-core", "property").forEach { artifactId ->
+        testImplementation("io.kotest:kotest-$artifactId:6.0.7")
+    }
 }
 
 java {
     withSourcesJar()
+}
+
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
 }
 
 publishing {
