@@ -1,11 +1,12 @@
 package com.github.seepick.kaml.github.dsl
 
+import com.github.seepick.kaml.Kaml
 import com.github.seepick.kaml.github.domain.Environment
 import com.github.seepick.kaml.github.domain.GithubAction
 import com.github.seepick.kaml.github.domain.Job
 import com.github.seepick.kaml.github.domain.Trigger
 
-fun githubKaml(code: GithubActionDsl.() -> Unit): GithubAction =
+fun Kaml.github(code: GithubActionDsl.() -> Unit): GithubAction =
     GithubActionDsl().apply(code).build()
 
 @DslMarker

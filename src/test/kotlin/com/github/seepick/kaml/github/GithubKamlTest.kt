@@ -1,7 +1,9 @@
 package com.github.seepick.kaml.github
 
+import com.github.seepick.kaml.Kaml
+import com.github.seepick.kaml.github.domain.Images.checkout
 import com.github.seepick.kaml.github.domain.Runtime
-import com.github.seepick.kaml.github.dsl.githubKaml
+import com.github.seepick.kaml.github.dsl.github
 import com.github.seepick.kaml.github.yaml.toYamlString
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.string.shouldContain
@@ -10,7 +12,7 @@ class GithubKamlTest : DescribeSpec({
 
     describe("Global configs") {
         it("name") {
-            githubKaml {
+            Kaml.github {
                 name = "Continuous Integration"
             }.toYamlString() shouldContain
                 """
@@ -20,7 +22,7 @@ class GithubKamlTest : DescribeSpec({
     }
     describe("Triggers") {
         it("on push branches") {
-            githubKaml {
+            Kaml.github {
                 triggers {
                     onPushBranches("main")
                 }
@@ -33,7 +35,7 @@ class GithubKamlTest : DescribeSpec({
                 """.trimMargin()
         }
         it("on cron") {
-            githubKaml {
+            Kaml.github {
                 triggers {
                     cron("0 0 * * *")
                 }
@@ -45,7 +47,7 @@ class GithubKamlTest : DescribeSpec({
                 """.trimMargin()
         }
         it("on manual") {
-            githubKaml {
+            Kaml.github {
                 triggers {
                     manual()
                     // support input values
@@ -59,7 +61,7 @@ class GithubKamlTest : DescribeSpec({
     }
     describe("Jobs") {
         it("general") {
-            githubKaml {
+            Kaml.github {
                 jobs {
                     job {
                         id = "jobId"
@@ -78,7 +80,7 @@ class GithubKamlTest : DescribeSpec({
     }
     describe("Steps") {
         it("checkout") {
-            githubKaml {
+            Kaml.github {
                 jobs {
                     job {
                         steps {
