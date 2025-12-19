@@ -1,12 +1,13 @@
 package com.github.seepick.kaml.github.dsl
 
 import com.github.seepick.kaml.JavaVersion
+import com.github.seepick.kaml.KamlDsl
 import com.github.seepick.kaml.github.domain.GenericStep
 import com.github.seepick.kaml.github.domain.Images
 import com.github.seepick.kaml.github.domain.RunStep
 import com.github.seepick.kaml.github.domain.Step
 
-@GithubDsl
+@KamlDsl
 class StepsDsl {
     // if own module, then these internal are not seen (no need for interface abstraction)
     internal val steps = mutableListOf<Step>()
@@ -26,7 +27,7 @@ class StepsDsl {
     fun build() = steps
 }
 
-@GithubDsl
+@KamlDsl
 class CheckoutDsl {
     var name: String = "Checkout Code"
 
@@ -44,7 +45,7 @@ enum class Distribution(val yamlValue: String) {
     }
 }
 
-@GithubDsl
+@KamlDsl
 class SetupJavaDsl {
     var name: String = "Setup JDK"
     var distribution: Distribution = Distribution.default
@@ -60,7 +61,7 @@ class SetupJavaDsl {
     )
 }
 
-@GithubDsl
+@KamlDsl
 class RunCommandDsl {
     var name: String = "Run Command"
     var command: String = "echo \"No actual run command defined!\";"

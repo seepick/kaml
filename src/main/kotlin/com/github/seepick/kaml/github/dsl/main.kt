@@ -1,6 +1,8 @@
 package com.github.seepick.kaml.github.dsl
 
+import com.github.seepick.kaml.Checkable
 import com.github.seepick.kaml.Kaml
+import com.github.seepick.kaml.KamlDsl
 import com.github.seepick.kaml.github.domain.Environment
 import com.github.seepick.kaml.github.domain.GithubAction
 import com.github.seepick.kaml.github.domain.Job
@@ -9,11 +11,8 @@ import com.github.seepick.kaml.github.domain.Trigger
 fun Kaml.github(code: GithubActionDsl.() -> Unit): GithubAction =
     GithubActionDsl().apply(code).build()
 
-@DslMarker
-annotation class GithubDsl
-
-@GithubDsl
-class GithubActionDsl {
+@KamlDsl
+class GithubActionDsl : Checkable {
     /** The visible name of the action in the GitHub UI. */
     var name: String = "Default Action Name"
     private var triggersList = emptyList<Trigger>()

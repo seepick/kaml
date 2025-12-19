@@ -1,12 +1,13 @@
 package com.github.seepick.kaml.github.dsl
 
+import com.github.seepick.kaml.KamlDsl
 import com.github.seepick.kaml.github.domain.Environment
 import com.github.seepick.kaml.github.domain.Job
 import com.github.seepick.kaml.github.domain.Permission
 import com.github.seepick.kaml.github.domain.Runtime
 import com.github.seepick.kaml.github.domain.Step
 
-@GithubDsl
+@KamlDsl
 class JobsDsl {
     val jobs = mutableListOf<Job>()
 
@@ -17,7 +18,7 @@ class JobsDsl {
     fun build() = jobs
 }
 
-@GithubDsl
+@KamlDsl
 class JobDsl {
     var id: String = "defaultJobId"
     var name: String = "Default Job Name"

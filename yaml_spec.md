@@ -8,6 +8,8 @@ See cheatsheet: https://yaml.org/refcard.html
 Basics
 ------------------------------------------------------------------------------------------------------------------------
 
+Dictionaries are unordered, lists are ordered.
+
 Strings do not require quotation marks.
 Double quotes support escape sequences, single quotes not:
 

@@ -2,9 +2,6 @@ package com.github.seepick.kaml.k8s.deployment
 
 import com.github.seepick.kaml.GenericImage
 import com.github.seepick.kaml.Kaml
-import com.github.seepick.kaml.github.yaml.toYamlString
-import com.github.seepick.kaml.k8s.deployment.dsl.deployment
-import com.github.seepick.kaml.k8s.deployment.yaml.toYamlString
 import com.github.seepick.kaml.k8s.k8s
 import com.github.seepick.kaml.loadTestResource
 import io.kotest.core.spec.style.StringSpec
@@ -14,7 +11,7 @@ class K8sDeployIntegrationTest : StringSpec({
 
     fun loadResource(path: String): String = loadTestResource("/k8s/$path")
 
-    "deploy-simple.yaml" {
+    "deployment-simple.yaml" {
         Kaml.k8s.deployment {
             name = "my-deployment"
             replicas = 2
@@ -26,6 +23,6 @@ class K8sDeployIntegrationTest : StringSpec({
                     image = GenericImage(name = "my-image", version = "latest")
                 }
             }
-        }.toYamlString() shouldBeEqual loadResource("deploy-simple.yaml")
+        }.toYamlString() shouldBeEqual loadResource("deployment-simple.yaml")
     }
 })
