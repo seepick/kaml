@@ -10,8 +10,10 @@ class PodTest : DescribeSpec({
     describe("simple test") {
         it("test") {
             Kaml.k8s.pod {
-                name = "my-pod"
-                labels = mapOf("foo" to "bar")
+                metadata {
+                    name = "my-pod"
+                    labels += "foo" to "bar"
+                }
                 container {
                     name = "my-container"
                     image = Image(name = "my-image", version = "latest")

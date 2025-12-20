@@ -1,9 +1,11 @@
 package com.github.seepick.kaml.k8s.deployment
 
 import com.github.seepick.kaml.KamlDsl
+import com.github.seepick.kaml.k8s.Container
 import com.github.seepick.kaml.k8s.ContainerDsl
-import com.github.seepick.kaml.k8s.GeneralMetadata
 import com.github.seepick.kaml.k8s.K8s
+import com.github.seepick.kaml.k8s.Metadata
+import com.github.seepick.kaml.k8s.MetadataDsl
 import com.github.seepick.kaml.kerror
 
 fun K8s.deployment(code: DeploymentDsl.() -> Unit): Deployment =
@@ -11,47 +13,66 @@ fun K8s.deployment(code: DeploymentDsl.() -> Unit): Deployment =
 
 @KamlDsl
 class DeploymentDsl {
-    /** The visible label of the deployment.*/
-    var name = "default-deployment-name"
 
-    var labels = emptyMap<String, String>()
-
+    companion object {
+        private const val DEFAULT_NAME = "default-deployment-name"
+    }
     /** Number of pods to run simultaneously. */
     var replicas = 1
-    /** ? */
-    var selectorMatchLabelsApp = "default-app"
-    private var templateInstance: Template? = null
 
+    /** How to filter for affected pods. */
+    private var selector = Selector.default
+    fun selector(code: SelectorDsl.() -> Unit) {
+        selector = SelectorDsl().apply(code).build()
+    }
+
+    private var metadata = Metadata.default.copy(name = DEFAULT_NAME)
+
+    fun metadata(code: MetadataDsl.() -> Unit) {
+        metadata = MetadataDsl().also { it.name = DEFAULT_NAME }.apply(code).build()
+    }
+
+    private var template = Template.default
     /** How a pod should look like when being created. */
     fun template(code: TemplateDsl.() -> Unit) {
-        templateInstance = TemplateDsl().apply(code).build()
+        template = TemplateDsl().apply(code).build()
     }
 
     internal fun build() = Deployment(
-        metadata = GeneralMetadata(name, labels),
+        metadata = metadata,
         spec = DeploymentSpec(
             replicas = replicas,
-            selector = Selector(matchLabelsApp = selectorMatchLabelsApp),
-            template = templateInstance ?: kerror("deployment template not set for [$name]")
+            selector = selector,
+            template = template,
         ),
+    )
+}
+
+@KamlDsl
+class SelectorDsl {
+    val matchLabels = mutableMapOf<String, String>()
+    fun build() = Selector(
+        matchLabels = matchLabels
     )
 }
 
 @KamlDsl
 class TemplateDsl {
 
-    /** ? */
-    var metadataLabelsApp = ""
+    private var metadata: Metadata? = null
+    fun metadata(code: MetadataDsl.() -> Unit) {
+//        require(metadata == null) { "deployment template metadata already set" }
+        metadata = MetadataDsl().apply(code).build()
+    }
 
-    private val containerList = mutableListOf<Container>()
-
+    private val containers = mutableListOf<Container>()
     /** A list of pods running in a single container. */
     fun container(code: ContainerDsl.() -> Unit) {
-        containerList += ContainerDsl().apply(code).build()
+        containers += ContainerDsl().apply(code).build()
     }
 
     internal fun build() = Template(
-        metadataLabelsApp = metadataLabelsApp,
-        containers = containerList,
+        metadata = metadata ?: kerror("deployment template metadata not set"),
+        containers = containers,
     )
 }

@@ -1,14 +1,14 @@
 package com.github.seepick.kaml.k8s.deployment
 
-import com.github.seepick.kaml.Image
 import com.github.seepick.kaml.KamlYamlOutput
-import com.github.seepick.kaml.k8s.GeneralMetadata
+import com.github.seepick.kaml.k8s.Container
 import com.github.seepick.kaml.k8s.Manifest
 import com.github.seepick.kaml.k8s.ManifestKind
+import com.github.seepick.kaml.k8s.Metadata
 
 data class Deployment(
     override val apiVersion: String = "apps/v1",
-    override val metadata: GeneralMetadata,
+    override val metadata: Metadata,
     override val spec: DeploymentSpec,
 ) : Manifest<DeploymentSpec>, KamlYamlOutput {
 
@@ -25,16 +25,19 @@ data class DeploymentSpec(
 )
 
 data class Selector(
-    val matchLabelsApp: String,
-)
+    val matchLabels: Map<String, String>,
+) {
+    companion object {
+        val default = Selector(emptyMap())
+    }
+}
 
 data class Template(
-    // FIXME refactor to Metadata.labels.Map<String, String>
-    val metadataLabelsApp: String,
+    val metadata: Metadata,
     val containers: List<Container>,
-)
+) {
+    companion object {
+        val default = Template(Metadata.default, containers = emptyList())
+    }
+}
 
-data class Container(
-    val image: Image,
-    val name: String,
-)

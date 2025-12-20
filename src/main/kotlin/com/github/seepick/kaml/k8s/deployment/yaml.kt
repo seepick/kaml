@@ -10,13 +10,27 @@ fun Deployment.toYamlString() = toYamlPattern(
         yamlMap().add("replicas", spec.replicas)
             .add(
                 "selector",
-                yamlMap().add("matchLabels", yamlMap().add("app", spec.selector.matchLabelsApp).build()).build()
+                yamlMap().add(
+                    "matchLabels", yamlMap()
+                        .also {
+                            spec.selector.matchLabels.forEach { (key, value) ->
+                                it.add(key, value)
+                            }
+                        }
+                        .build()).build()
             )
             .add(
                 "template", yamlMap()
                     .add(
                         "metadata",
-                        yamlMap().add("labels", yamlMap().add("app", spec.template.metadataLabelsApp).build())
+                        yamlMap().add(
+                            "labels", yamlMap()
+                                .also {
+                                    spec.template.metadata.labels.forEach { (key, value) ->
+                                        it.add(key, value)
+                                    }
+                                }
+                                .build())
                             .build()
                     )
                     .add("spec", yamlMap().add("containers", yamlSeq().also { seq ->
