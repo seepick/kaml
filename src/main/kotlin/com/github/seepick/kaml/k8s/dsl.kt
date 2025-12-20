@@ -33,3 +33,22 @@ class MetadataDsl {
         labels = labels,
     )
 }
+
+abstract class PodOrTemplateDsl<POT>() {
+
+    private var _metadata: Metadata? = null
+    protected val metadata get() = _metadata ?: kerror("metadata not set")
+
+    fun metadata(code: MetadataDsl.() -> Unit) {
+//      TODO ?  require(metadata == null) { "deployment template metadata already set" }
+        _metadata = MetadataDsl().also { it.name = "default-pod-name" }.apply(code).build()
+    }
+
+    protected val containers = mutableListOf<Container>()
+    /** A list of pods running in a single container. */
+    fun container(code: ContainerDsl.() -> Unit) {
+        containers += ContainerDsl().apply(code).build()
+    }
+
+    internal abstract fun build(): POT
+}

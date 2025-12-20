@@ -1,12 +1,10 @@
 package com.github.seepick.kaml.k8s.deployment
 
 import com.github.seepick.kaml.KamlDsl
-import com.github.seepick.kaml.k8s.Container
-import com.github.seepick.kaml.k8s.ContainerDsl
 import com.github.seepick.kaml.k8s.K8s
 import com.github.seepick.kaml.k8s.Metadata
 import com.github.seepick.kaml.k8s.MetadataDsl
-import com.github.seepick.kaml.kerror
+import com.github.seepick.kaml.k8s.PodOrTemplateDsl
 
 fun K8s.deployment(code: DeploymentDsl.() -> Unit): Deployment =
     DeploymentDsl().apply(code).build()
@@ -56,23 +54,11 @@ class SelectorDsl {
     )
 }
 
+
 @KamlDsl
-class TemplateDsl {
-
-    private var metadata: Metadata? = null
-    fun metadata(code: MetadataDsl.() -> Unit) {
-//        require(metadata == null) { "deployment template metadata already set" }
-        metadata = MetadataDsl().apply(code).build()
-    }
-
-    private val containers = mutableListOf<Container>()
-    /** A list of pods running in a single container. */
-    fun container(code: ContainerDsl.() -> Unit) {
-        containers += ContainerDsl().apply(code).build()
-    }
-
-    internal fun build() = Template(
-        metadata = metadata ?: kerror("deployment template metadata not set"),
+class TemplateDsl : PodOrTemplateDsl<Template>() {
+    override fun build() = Template(
+        metadata = metadata,
         containers = containers,
     )
 }

@@ -1,7 +1,9 @@
 Kaml
 ========================================================================================================================
 
-A Kotlin Yaml generator offering a concise, typesafe, "auto-completable" DSL.
+A Kotlin Yaml generator offering a concise, typesafe, "auto-completable" DSL...
+Just kidding, this is just a fun learning project.
+Use your favorite IDE with Yaml support and preferably a sophisticated AI to support you.
 
 *Advantages*
 
@@ -14,10 +16,34 @@ A Kotlin Yaml generator offering a concise, typesafe, "auto-completable" DSL.
 * Low risk: Can be dropped at any time and continue hand writing
 * DSLs available for: OpenAPI, GitHub Actions, Azure DevOps, Kubernetes, OpenShift, ...
 
-_Note_: This is different then [charleskorn's KAML](https://github.com/charleskorn/kaml/), which intention was (it's not maintained anymore) to add YAML support to kotlinx.serialization.
+_Note_: This is different then [charleskorn's KAML](https://github.com/charleskorn/kaml/), which intention was (it's not
+maintained anymore) to add YAML support to kotlinx.serialization.
 
 Howto
 ------------------------------------------------------------------------------------------------------------------------
+
+Example of a Kubernetes Deployment manifest:
+
+```kotlin
+Kaml.k8s.deployment {
+    metadata {
+        name = "my-deployment"
+    }
+    selector {
+        matchLabels += "app" to "my-container"
+    }
+    replicas = 2
+    template {
+        metadata {
+            labels += "app" to "my-container"
+        }
+        container {
+            name = "my-container"
+            image = Image(name = "my-image", version = "latest")
+        }
+    }
+} saveYamlTo File("deployment.yaml")
+```
 
 Example of a GitHub action with Kaml:
 
@@ -47,10 +73,10 @@ githubKaml {
             }
         }
     }
-}
+} saveYamlTo File("continuous.yaml")
 ```
 
-Then execute invoke the DSLs `.toYamlString()` and save it to a file of your choice.
+Or get the Yaml string yourself by invoking `toYaml()` and do how it seems fit for you.
 
 Setup
 ------------------------------------------------------------------------------------------------------------------------
@@ -78,17 +104,6 @@ dependencies {
 
 Lookup the latest version on the [JitPack website](https://jitpack.io/#seepick/kaml).
 
-Todos
-------------------------------------------------------------------------------------------------------------------------
-
-Ad GitHub Actions:
-
-* multi-line strings (preserved | and folded >)
-* extensibility: allow for totally custom yaml entries
-* support comments
-* showcase building layer on top of DSL (reuse, reference, ...)
-* generation modes: 1) inline 2) reuse/reference (the typical way when handwriting them)
-
 Developer Hints
 ========================================================================================================================
 
@@ -97,6 +112,8 @@ Developer Hints
 
 Research
 ========================================================================================================================
+
+[Yaml specification](https://github.com/seepick/kaml/blob/main/yaml_spec.md) summarized.
 
 Yaml Libs
 ------------------------------------------------------------------------------------------------------------------------
