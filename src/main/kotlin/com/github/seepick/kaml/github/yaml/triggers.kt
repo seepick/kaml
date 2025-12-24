@@ -1,14 +1,14 @@
 package com.github.seepick.kaml.github.yaml
 
 import com.amihaiemil.eoyaml.YamlMapping
-import com.github.seepick.kaml.addAllStrings
+import com.github.seepick.kaml.yaml.addAllStrings
 import com.github.seepick.kaml.github.domain.CronTrigger
 import com.github.seepick.kaml.github.domain.ManualTrigger
 import com.github.seepick.kaml.github.domain.OnPushBranchTrigger
 import com.github.seepick.kaml.github.domain.Trigger
-import com.github.seepick.kaml.yamlMap
-import com.github.seepick.kaml.yamlScal
-import com.github.seepick.kaml.yamlSeq
+import com.github.seepick.kaml.yaml.yamlMap
+import com.github.seepick.kaml.yaml.yamlScal
+import com.github.seepick.kaml.yaml.yamlSeq
 
 internal fun triggersYaml(triggers: List<Trigger>): YamlMapping {
     val rootTriggers = yamlMap()

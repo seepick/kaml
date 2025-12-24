@@ -2,11 +2,11 @@ package com.github.seepick.kaml.github.yaml
 
 import com.amihaiemil.eoyaml.YamlMapping
 import com.github.seepick.kaml.ImageFormatter
-import com.github.seepick.kaml.addKeyValues
+import com.github.seepick.kaml.yaml.addKeyValues
 import com.github.seepick.kaml.github.domain.GenericStep
 import com.github.seepick.kaml.github.domain.RunStep
 import com.github.seepick.kaml.github.domain.Step
-import com.github.seepick.kaml.yamlMap
+import com.github.seepick.kaml.yaml.yamlMap
 
 internal fun stepYaml(step: Step): YamlMapping {
     val stepYaml = yamlMap().add("name", step.name)

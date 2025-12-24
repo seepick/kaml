@@ -1,4 +1,4 @@
-package com.github.seepick.kaml
+package com.github.seepick.kaml.yaml
 
 import com.amihaiemil.eoyaml.Yaml
 import com.amihaiemil.eoyaml.YamlMappingBuilder
@@ -11,6 +11,10 @@ internal fun YamlSequenceBuilder.addAllNodes(nodes: List<YamlNode>) = apply {
 
 fun YamlSequenceBuilder.addAllStrings(nodes: List<String>) = apply {
     nodes.forEach(::add)
+}
+
+fun YamlSequenceBuilder.addAllTypeSafe(nodes: List<Any>) = apply {
+    nodes.forEach { addTypeSafe(it) }
 }
 
 fun yamlMap() = Yaml.createMutableYamlMappingBuilder()
@@ -26,6 +30,8 @@ fun YamlMappingBuilder.addKeyValues(map: Map<String, String>) = apply {
         add(key, value)
     }
 }
+
+fun YamlNode.toCleanYamlString() = toString().let(::fixDashPlacement)
 
 /** Move a lone "-" line to the same line as the following mapping key.
  *  Example:

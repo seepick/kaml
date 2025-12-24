@@ -1,9 +1,8 @@
 package com.github.seepick.kaml.github.yaml
 
-import com.github.seepick.kaml.fixDashPlacement
 import com.github.seepick.kaml.github.domain.GithubAction
-import com.github.seepick.kaml.github.yaml.jobsYaml
-import com.github.seepick.kaml.yamlMap
+import com.github.seepick.kaml.yaml.toCleanYamlString
+import com.github.seepick.kaml.yaml.yamlMap
 
 fun GithubAction.toYamlString(): String {
     val root = yamlMap()
@@ -16,7 +15,5 @@ fun GithubAction.toYamlString(): String {
     }
 //    val printer = Yaml.createYamlPrinter(FileWriter("/path/to/map.yml"))
 //    printer.print(map)
-    return root.build().toString()
-        .let(::fixDashPlacement) // GitHubAction, steps mapping-sequence with "-" prefixed
-//        .also { println(it) }
+    return root.build().toCleanYamlString()
 }

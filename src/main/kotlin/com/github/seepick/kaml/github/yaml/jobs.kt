@@ -1,11 +1,10 @@
 package com.github.seepick.kaml.github.yaml
 
 import com.amihaiemil.eoyaml.YamlMapping
-import com.github.seepick.kaml.ImageFormatter
-import com.github.seepick.kaml.addAllNodes
+import com.github.seepick.kaml.yaml.addAllNodes
 import com.github.seepick.kaml.github.domain.Job
-import com.github.seepick.kaml.yamlMap
-import com.github.seepick.kaml.yamlSeq
+import com.github.seepick.kaml.yaml.yamlMap
+import com.github.seepick.kaml.yaml.yamlSeq
 import kotlin.collections.map
 
 internal fun jobsYaml(jobs: List<Job>): YamlMapping {

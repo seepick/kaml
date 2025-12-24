@@ -2,8 +2,8 @@ package com.github.seepick.kaml.k8s.deployment
 
 import com.github.seepick.kaml.ImageFormatter
 import com.github.seepick.kaml.k8s.toYamlPattern
-import com.github.seepick.kaml.yamlMap
-import com.github.seepick.kaml.yamlSeq
+import com.github.seepick.kaml.yaml.yamlMap
+import com.github.seepick.kaml.yaml.yamlSeq
 
 fun Deployment.toYamlString() = toYamlPattern(
     buildSpec = { spec ->
