@@ -65,6 +65,10 @@ class YamlMapDsl {
         items[key] = value
     }
 
+    fun addIfNotNull(key: String, value: Any?) {
+        if (value != null) add(key, value)
+    }
+
     fun build(): YamlMapping {
         return yamlMap().also { root ->
             items.forEach { (k, v) ->

@@ -25,7 +25,6 @@ class DeploymentDsl {
     }
 
     private var metadata = Metadata.default.copy(name = DEFAULT_NAME)
-
     fun metadata(code: MetadataDsl.() -> Unit) {
         metadata = MetadataDsl().also { it.name = DEFAULT_NAME }.apply(code).build()
     }

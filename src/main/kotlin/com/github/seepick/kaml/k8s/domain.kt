@@ -34,8 +34,7 @@ data class Metadata(
 enum class ManifestKind(val yamlValue: String) {
     Deployment("Deployment"),
     Pod("Pod"),
-    // Service
-    // Deployment
+    Service("Service"),
     // ReplicaSet
 }
 
@@ -47,6 +46,14 @@ data class Container(
 )
 
 data class Port(
-    val name: String,
-    val containerPort: Int,
+    val name: String?,
+    val containerPort: Int?,
+    val protocol: Protocol?,
+    val port: Int?,
+    val targetPort: Int?,
+    val nodePort: Int?, // 30080
 )
+
+enum class Protocol(val yamlValue: String) {
+    TCP("TCP"), UDP("UDP")
+}

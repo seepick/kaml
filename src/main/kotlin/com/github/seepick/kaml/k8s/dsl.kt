@@ -32,11 +32,19 @@ class ContainerDsl {
 @KamlDsl
 class PortDsl {
 
-    var name: String = "default-port-name"
-    var containerPort: Int = 8080
+    var name: String? = null
+    var protocol: Protocol? = null
+    var port: Int? = null
+    var nodePort: Int? = null
+    var targetPort: Int? = null
+    var containerPort: Int? = null
 
     internal fun build() = Port(
         name = name,
+        protocol = protocol,
+        port = port,
+        nodePort = nodePort,
+        targetPort = targetPort,
         containerPort = containerPort,
     )
 }

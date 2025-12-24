@@ -12,32 +12,44 @@ fun <Spec> YamlMapDsl.addManifest(manifest: Manifest<Spec>, spec: YamlMapDsl.() 
     }
 }
 
+fun YamlMapDsl.addPorts(ports: List<Port>) {
+    if (ports.isNotEmpty()) {
+        seq("ports") {
+            ports.forEach { port ->
+                flatMap {
+                    addIfNotNull("containerPort", port.containerPort)
+                    addIfNotNull("name", port.name)
+                    addIfNotNull("protocol", port.protocol?.yamlValue)
+                    addIfNotNull("port", port.port)
+                    addIfNotNull("targetPort", port.targetPort)
+                    addIfNotNull("nodePort", port.nodePort)
+                }
+            }
+        }
+    }
+}
+
+fun YamlMapDsl.addEnv(env: Map<String, Any>) {
+    if (env.isNotEmpty()) {
+        seq("env") {
+            env.forEach { (name, value) ->
+                flatMap {
+                    add("name", name)
+                    add("value", value)
+                }
+            }
+        }
+    }
+}
+
 fun YamlMapDsl.addContainers(containers: List<Container>) {
     seq("containers") {
         containers.forEach { container ->
             flatMap {
                 add("name", container.name)
                 add("image", container.image.format(ImageFormatter.Docker))
-                if (container.ports.isNotEmpty()) {
-                    seq("ports") {
-                        container.ports.forEach { port ->
-                            flatMap {
-                                add("containerPort", port.containerPort)
-                                add("name", port.name)
-                            }
-                        }
-                    }
-                }
-                if (container.env.isNotEmpty()) {
-                    seq("env") {
-                        container.env.forEach { (name, value) ->
-                            flatMap {
-                                add("name", name)
-                                add("value", value)
-                            }
-                        }
-                    }
-                }
+                addPorts(container.ports)
+                addEnv(container.env)
             }
         }
     }
