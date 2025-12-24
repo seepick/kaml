@@ -2,21 +2,32 @@ package com.github.seepick.kaml.k8s
 
 import com.github.seepick.kaml.Image
 
+interface ApiVersion {
+    val yamlValue: String
+}
+
+enum class K8sApiVersion(override val yamlValue: String) : ApiVersion {
+    Pod("v1"),
+    Service("v1"),
+    Deployment("apps/v1"),
+    ReplicaSet("apps/v1"),
+}
+
+//data class CustomApiVersion(val group...name: String) : ApiVersion
+
 interface Manifest<Spec> {
-    //    Pod/Service: apiVersion="v1"
-//    ReplicaSet/Deployment: apiVersion="apps/v1"
-    val apiVersion: String
+    val apiVersion: ApiVersion
     val kind: ManifestKind
     val metadata: Metadata
     val spec: Spec
 }
 
 data class Metadata(
-    val name: String,
+    val name: String?,
     val labels: Map<String, String>,
 ) {
     companion object {
-        val default = Metadata(name = "default-name", labels = emptyMap())
+        val default = Metadata(name = null, labels = emptyMap())
     }
 }
 
@@ -32,6 +43,7 @@ data class Container(
     val image: Image,
     val name: String,
     val ports: List<Port>,
+    val env: Map<String, Any>,
 )
 
 data class Port(

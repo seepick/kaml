@@ -21,6 +21,7 @@ class PodTest : DescribeSpec({
                         containerPort = 80
                         name = "my-portname"
                     }
+                    env += "envKey" to "envVal"
                 }
             }.toYaml() shouldBeEqual """
                 apiVersion: v1
@@ -36,6 +37,9 @@ class PodTest : DescribeSpec({
                       ports:
                         - containerPort: 80
                           name: my-portname
+                      env:
+                        - name: envKey
+                          value: envVal
             """.trimIndent()
         }
     }

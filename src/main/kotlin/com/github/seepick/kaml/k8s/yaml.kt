@@ -1,30 +1,55 @@
 package com.github.seepick.kaml.k8s
 
-import com.amihaiemil.eoyaml.YamlNode
-import com.github.seepick.kaml.yaml.addKeyValues
-import com.github.seepick.kaml.yaml.toCleanYamlString
-import com.github.seepick.kaml.yaml.yamlMap
+import com.github.seepick.kaml.ImageFormatter
+import com.github.seepick.kaml.yaml.YamlMapDsl
 
-internal fun <Spec> Manifest<Spec>.toYamlPattern(
-//    buildMetadata: (MetaData) -> YamlNode,
-    buildSpec: (Spec) -> YamlNode,
-): String {
-
-    val root = yamlMap()
-    root.add("apiVersion", apiVersion)
-    root.add("kind", kind.yamlValue)
-
-    root.add(
-        "metadata", yamlMap()
-            .add("name", metadata.name)
-            .also {
-                if (this.metadata.labels.isNotEmpty()) {
-                    it.add("labels", yamlMap().addKeyValues(metadata.labels).build())
-                }
-            }
-            .build())
-    root.add("spec", buildSpec(spec))
-    // maybe more specifics...?
-    return root.build().toCleanYamlString()
+fun <Spec> YamlMapDsl.addManifest(manifest: Manifest<Spec>, spec: YamlMapDsl.() -> Unit) {
+    add("apiVersion", manifest.apiVersion.yamlValue)
+    add("kind", manifest.kind.yamlValue)
+    addMetadata(manifest.metadata)
+    map("spec") {
+        spec()
+    }
 }
 
+fun YamlMapDsl.addContainers(containers: List<Container>) {
+    seq("containers") {
+        containers.forEach { container ->
+            flatMap {
+                add("name", container.name)
+                add("image", container.image.format(ImageFormatter.Docker))
+                if (container.ports.isNotEmpty()) {
+                    seq("ports") {
+                        container.ports.forEach { port ->
+                            flatMap {
+                                add("containerPort", port.containerPort)
+                                add("name", port.name)
+                            }
+                        }
+                    }
+                }
+                if (container.env.isNotEmpty()) {
+                    seq("env") {
+                        container.env.forEach { (name, value) ->
+                            flatMap {
+                                add("name", name)
+                                add("value", value)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+fun YamlMapDsl.addMetadata(metadata: Metadata) {
+    map("metadata") {
+        if (metadata.name != null) add("name", metadata.name)
+        if (metadata.labels.isNotEmpty()) {
+            map("labels") {
+                addAll(metadata.labels)
+            }
+        }
+    }
+}

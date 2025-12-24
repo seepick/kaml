@@ -15,6 +15,8 @@ class ContainerDsl {
 
     private val ports = mutableListOf<Port>()
 
+    val env = mutableMapOf<String, Any>()
+
     fun ports(code: PortDsl.() -> Unit) {
         ports += PortDsl().apply(code).build()
     }
@@ -23,6 +25,7 @@ class ContainerDsl {
         image = image ?: kerror("container image not set for [$name]"),
         name = name,
         ports = ports,
+        env = env,
     )
 }
 
@@ -42,7 +45,7 @@ class PortDsl {
 class MetadataDsl {
 
     /** The visible label of this artifact.*/
-    var name: String = "default-name"
+    var name: String? = null
 
     /** Arbitrary key-value information; for grouping/selecting. */
     val labels = mutableMapOf<String, String>()
@@ -60,7 +63,7 @@ abstract class PodOrTemplateDsl<POT>() {
 
     fun metadata(code: MetadataDsl.() -> Unit) {
 //      TODO ?  require(metadata == null) { "deployment template metadata already set" }
-        _metadata = MetadataDsl().also { it.name = "default-pod-name" }.apply(code).build()
+        _metadata = MetadataDsl().apply(code).build()
     }
 
     protected val containers = mutableListOf<Container>()
