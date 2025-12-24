@@ -8,8 +8,9 @@ TODOs
     - Deployment, Service,... (provide a lot examples with explanatory comments)
 * Kaml.Github (workflow action)
 * Kaml.OpenApi
-* Kaml.AzureBuild (pipeline job),
 * Kaml.Kustomize.* (base, overlays, ... all in one file. it will setup dir structure for you)
+* Kaml.AzureBuild (pipeline job),
+* Kaml.OpenShift (?)
 * github pages
 
 Ad Github Actions

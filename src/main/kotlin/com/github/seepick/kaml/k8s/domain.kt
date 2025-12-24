@@ -31,4 +31,10 @@ enum class ManifestKind(val yamlValue: String) {
 data class Container(
     val image: Image,
     val name: String,
+    val ports: List<Port>,
+)
+
+data class Port(
+    val name: String,
+    val containerPort: Int,
 )

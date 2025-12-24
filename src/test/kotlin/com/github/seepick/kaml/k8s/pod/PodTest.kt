@@ -11,24 +11,31 @@ class PodTest : DescribeSpec({
         it("test") {
             Kaml.k8s.pod {
                 metadata {
-                    name = "my-pod"
-                    labels += "foo" to "bar"
+                    name = "my-podname"
+                    labels += "myLabel" to "myLabelValue"
                 }
                 container {
-                    name = "my-container"
-                    image = Image(name = "my-image", version = "latest")
+                    name = "my-containername"
+                    image = Image(name = "my-imagename", version = "my-imageVersion")
+                    ports {
+                        containerPort = 80
+                        name = "my-portname"
+                    }
                 }
             }.toYaml() shouldBeEqual """
                 apiVersion: v1
                 kind: Pod
                 metadata:
-                  name: my-pod
+                  name: my-podname
                   labels:
-                    foo: bar
+                    myLabel: myLabelValue
                 spec:
                   containers:
-                    - name: my-container
-                      image: my-image:latest
+                    - name: my-containername
+                      image: my-imagename:my-imageVersion
+                      ports:
+                        - containerPort: 80
+                          name: my-portname
             """.trimIndent()
         }
     }

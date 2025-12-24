@@ -1,23 +1,32 @@
 Kaml
 ========================================================================================================================
 
-A Kotlin Yaml generator offering a concise, typesafe, "auto-completable" DSL...
-Just kidding, this is just a fun learning project.
-Use your favorite IDE with Yaml support and preferably a sophisticated AI to support you.
+A Kotlin Yaml generator offering a concise, typesafe, "auto-completable" DSL.
 
-*Advantages*
-
-* *Typesafe*: no more "misplaced indentation" and hours/days of painstaking debugging
-* _*Auto-completable*_: lowering entrance barrier for new learning
-* Possibility for more sophisticated high-level semantic *checks*
-* YAML is inlined/flattened-out and always see what's actually happening
-    - no include templating mechanism (dislocated), but maybe add support mode?
-    - inclusions are done in high-level kotlin DSL,
-* Low risk: Can be dropped at any time and continue hand writing
-* DSLs available for: OpenAPI, GitHub Actions, Azure DevOps, Kubernetes, OpenShift, ...
+Just kidding, this is only a fun learning project 😜
+Use your favorite IDE with YAML support and preferably a sophisticated AI to help you write YAML.
 
 _Note_: This is different then [charleskorn's KAML](https://github.com/charleskorn/kaml/), which intention was (it's not
 maintained anymore) to add YAML support to kotlinx.serialization.
+
+Benefits
+------------------------------------------------------------------------------------------------------------------------
+
+* *Typesafe*: no more "misplaced indentation" and hours/days of painstaking debugging (use statically typed language and
+  compiler checks)
+* _*Auto-completable*_: lowering entrance barrier for new learning (not having to remember all options)
+* From run-time (deploy and wait) to write-time (instant compiler) feedback
+* Use code features and introduce custom abstraction layer on top (specific, reusable functionality; extension
+  functions, parameterized blocks)
+* YAML is inlined/flattened-out and always see what's actually happening
+    - no include templating mechanism (dislocated), but maybe add support mode?
+    - inclusions are done in high-level kotlin DSL,
+* Possibility for more sophisticated high-level semantic *checks*
+* Low risk: Can be dropped at any time and continue hand written YAML files instead
+* DSLs available for: OpenAPI, GitHub Actions, Azure DevOps, Kubernetes, OpenShift, ...
+
+PS: A Kotlin DSL offers basically the same level of conciseness as a YAML file (speaking in terms of LoC), but its
+advantages lies in other areas.
 
 Howto
 ------------------------------------------------------------------------------------------------------------------------

@@ -13,9 +13,28 @@ class ContainerDsl {
     /** Container image, provided by a registry. */
     var image: Image? = null
 
+    private val ports = mutableListOf<Port>()
+
+    fun ports(code: PortDsl.() -> Unit) {
+        ports += PortDsl().apply(code).build()
+    }
+
     internal fun build() = Container(
         image = image ?: kerror("container image not set for [$name]"),
         name = name,
+        ports = ports,
+    )
+}
+
+@KamlDsl
+class PortDsl {
+
+    var name: String = "default-port-name"
+    var containerPort: Int = 8080
+
+    internal fun build() = Port(
+        name = name,
+        containerPort = containerPort,
     )
 }
 
