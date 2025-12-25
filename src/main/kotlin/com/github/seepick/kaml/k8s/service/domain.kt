@@ -1,5 +1,6 @@
 package com.github.seepick.kaml.k8s.service
 
+import com.github.seepick.kaml.KamlYamlOutput
 import com.github.seepick.kaml.k8s.K8sApiVersion
 import com.github.seepick.kaml.k8s.Manifest
 import com.github.seepick.kaml.k8s.ManifestKind
@@ -9,9 +10,10 @@ import com.github.seepick.kaml.k8s.Port
 data class Service(
     override val metadata: Metadata,
     override val spec: ServiceSpec,
-) : Manifest<ServiceSpec> {
+) : Manifest<ServiceSpec>, KamlYamlOutput {
     override val apiVersion = K8sApiVersion.Service
     override val kind = ManifestKind.Service
+    override fun toYaml() = toYamlString()
 }
 
 data class ServiceSpec(
@@ -21,7 +23,9 @@ data class ServiceSpec(
 )
 
 enum class ServiceType(val yamlValue: String) {
+    /** group pods together, providing single access interface */
     ClusterIP("ClusterIP"),
+    /** enable access from outside the cluster */
     NodePort("NodePort"),
     LoadBalancer("LoadBalancer");
 

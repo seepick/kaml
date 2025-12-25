@@ -11,6 +11,7 @@ data class Pod(
     override val apiVersion: ApiVersion,
     override val metadata: Metadata,
     override val spec: PodSpec,
+    // status = {}
 ) : Manifest<PodSpec>, KamlYamlOutput {
 
     override val kind: ManifestKind = ManifestKind.Pod
@@ -20,4 +21,6 @@ data class Pod(
 
 data class PodSpec(
     val containers: List<Container>,
+    // dnsPolicy = ClusterFirst, ...
+    // restartPolicy = Always, ...
 )

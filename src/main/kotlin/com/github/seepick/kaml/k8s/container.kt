@@ -12,6 +12,7 @@ data class Container(
     val image: Image,
     /** Mandatory by k8s */
     val name: String,
+    // resources = {}
     val ports: List<Port>,
     val env: Map<String, Any>,
 ) : Validatable {

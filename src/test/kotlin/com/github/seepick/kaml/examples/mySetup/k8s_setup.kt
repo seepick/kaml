@@ -27,6 +27,7 @@ fun main() {
 
     listOf(
         k8s.backendDeployment(groupId) to "app.deployment.yaml",
+        k8s.backendService(groupId) to "app.service.yaml",
 //        k8s.dbDeployment(
 //            prefix, DbDeploymentConfig(
 //                postgresUser = K8sConfigMap.postgresCreds.first,

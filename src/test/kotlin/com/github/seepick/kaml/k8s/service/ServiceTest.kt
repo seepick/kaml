@@ -12,7 +12,7 @@ class ServiceTest : StringSpec({
             metadata {
                 name = "my-service"
             }
-            serviceType = ServiceType.NodePort
+            type = ServiceType.NodePort
             ports {
                 port = 80
                 targetPort = 80

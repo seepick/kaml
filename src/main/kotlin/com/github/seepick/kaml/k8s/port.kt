@@ -7,13 +7,8 @@ data class Port(
     val name: String?,
     val containerPort: Int?, // NOT for NodePort type
     val protocol: Protocol?,
-
-    // TODO could add some semantic checks here
-    /** for the pod/container */
     val targetPort: Int?,
-    /** for the service */
     val port: Int?,
-    /** for the node; valid range: 30000-32767 */
     val nodePort: Int?,
 )
 
@@ -21,9 +16,14 @@ data class Port(
 class PortDsl {
     var name: String? = null
     var protocol: Protocol? = null
+    /** for the service */
     var port: Int? = null
+    /** for the node; valid range: 30000-32767; default: a random valid port */
     var nodePort: Int? = null
+    // TODO could add some semantic checks here
+    /** for the pod/container; defaults to 'port' value */
     var targetPort: Int? = null
+    /** ? */
     var containerPort: Int? = null
 
     internal fun build() = Port(
