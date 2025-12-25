@@ -12,6 +12,7 @@ class PodTest : DescribeSpec({
             Kaml.k8s.pod {
                 metadata {
                     name = "my-podname"
+                    namespace = "dev"
                     labels += "myLabel" to "myLabelValue"
                 }
                 container {
@@ -28,6 +29,7 @@ class PodTest : DescribeSpec({
                 kind: Pod
                 metadata:
                   name: my-podname
+                  namespace: dev
                   labels:
                     myLabel: myLabelValue
                 spec:
@@ -35,8 +37,8 @@ class PodTest : DescribeSpec({
                     - name: my-containername
                       image: my-imagename:my-imageVersion
                       ports:
-                        - containerPort: 80
-                          name: my-portname
+                        - name: my-portname
+                          containerPort: 80
                       env:
                         - name: envKey
                           value: envVal

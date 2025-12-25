@@ -6,7 +6,7 @@ import com.github.seepick.kaml.k8s.deployment.deployment
 import com.github.seepick.kaml.k8s.service.ServiceType
 import com.github.seepick.kaml.k8s.service.service
 
-private val Image.Companion.demoApp get() = Image("docker.io/library/demo-app", version = "1")
+private val Image.Companion.demoApp get() = Image("docker.io/library/demo-app", version = "latest")
 private val podLabel = K8sConfigMap.podLabelKey to "${groupId}-backend"
 
 fun XK8s.backendDeployment(groupId: String) = deployment {
@@ -28,6 +28,9 @@ fun XK8s.backendDeployment(groupId: String) = deployment {
             name = "${groupId}-backend-container"
             image = Image.demoApp
             env += "PORT" to "\"\"8080\"\"" // FIXME quote fix?! otherwise "cannot convert int64 to string"
+            env += "DB_JDBC" to configMap.dbJdbc
+            env += "DB_USER" to configMap.dbUserPass.first
+            env += "DB_PASS" to configMap.dbUserPass.second
         }
     }
     // FIXME wire db service

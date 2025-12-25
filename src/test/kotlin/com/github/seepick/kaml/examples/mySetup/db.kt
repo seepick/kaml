@@ -4,19 +4,25 @@ import com.github.seepick.kaml.Image
 import com.github.seepick.kaml.examples.mySetup.K8sConfigMap.podLabelKey
 import com.github.seepick.kaml.k8s.XK8s
 import com.github.seepick.kaml.k8s.deployment.deployment
+import com.github.seepick.kaml.k8s.service.ServiceType
+import com.github.seepick.kaml.k8s.service.service
 
-data class DbDeploymentConfig(val postgresUser: String, val postgresPass: String)
+private val podLabel = podLabelKey to "${groupId}-db"
+
+data class DbDeploymentConfig(
+    val user: String,
+    val pass: String,
+    val port: Int,
+)
 
 fun XK8s.dbDeployment(groupId: String, config: DbDeploymentConfig) = deployment {
-    val podLabel = podLabelKey to "${groupId}-db"
-
     metadata {
         name = "${groupId}-db-deployment"
     }
     selector {
         matchLabels += podLabel
     }
-    replicas = 2
+    replicas = 1
     template {
         metadata {
             name = "${groupId}-db-pod"
@@ -26,11 +32,25 @@ fun XK8s.dbDeployment(groupId: String, config: DbDeploymentConfig) = deployment 
             name = configMap.dbHostname
             image = Image("postgres", version = "15-alpine")
             ports {
-                containerPort = 5432
+                containerPort = config.port
                 name = "postgres"
             }
-            env += "POSTGRES_USER" to config.postgresUser
-            env += "POSTGRES_PASSWORD" to config.postgresPass
+            env += "POSTGRES_USER" to config.user
+            env += "POSTGRES_PASSWORD" to config.pass
         }
+    }
+}
+
+fun XK8s.dbService(groupId: String) = service {
+    metadata {
+        name = "${groupId}-db-service"
+    }
+    type = ServiceType.ClusterIP
+    selector += podLabel
+    ports {
+        // FIXME which one? StatefulSet? something completely different?
+//        targetPort = 8080
+//        port = 8080
+//        nodePort = 30080
     }
 }
