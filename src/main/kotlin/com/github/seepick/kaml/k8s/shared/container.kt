@@ -1,4 +1,4 @@
-package com.github.seepick.kaml.k8s
+package com.github.seepick.kaml.k8s.shared
 
 import com.github.seepick.kaml.Image
 import com.github.seepick.kaml.ImageFormatter

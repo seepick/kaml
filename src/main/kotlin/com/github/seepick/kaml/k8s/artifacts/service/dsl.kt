@@ -1,13 +1,13 @@
-package com.github.seepick.kaml.k8s.service
+package com.github.seepick.kaml.k8s.artifacts.service
 
 import com.github.seepick.kaml.KamlDsl
 import com.github.seepick.kaml.Konfig
 import com.github.seepick.kaml.k8s.K8s
-import com.github.seepick.kaml.k8s.Metadata
-import com.github.seepick.kaml.k8s.MetadataDsl
-import com.github.seepick.kaml.k8s.Port
-import com.github.seepick.kaml.k8s.PortDsl
 import com.github.seepick.kaml.k8s.XK8s
+import com.github.seepick.kaml.k8s.shared.Metadata
+import com.github.seepick.kaml.k8s.shared.MetadataDsl
+import com.github.seepick.kaml.k8s.shared.ServicePort
+import com.github.seepick.kaml.k8s.shared.ServicePortDsl
 import java.lang.constant.ConstantDescs.DEFAULT_NAME
 
 fun K8s.service(konfig: Konfig = Konfig.default, code: ServiceDsl.() -> Unit): Service =
@@ -27,9 +27,9 @@ class ServiceDsl(private val konfig: Konfig) {
 
     var type = ServiceType.default
 
-    private val ports = mutableListOf<Port>()
-    fun ports(code: PortDsl.() -> Unit) {
-        ports += PortDsl().apply(code).build()
+    private val ports = mutableListOf<ServicePort>()
+    fun ports(code: ServicePortDsl.() -> Unit) {
+        ports += ServicePortDsl().apply(code).build()
     }
 
     /** Labels defined in the pod's (deployment template's) metadata. */

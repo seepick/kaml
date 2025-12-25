@@ -7,7 +7,6 @@ import com.github.seepick.kaml.github.domain.Runtime
 import com.github.seepick.kaml.github.dsl.DemoEnvironmentNamespace
 import com.github.seepick.kaml.github.dsl.Distribution
 import com.github.seepick.kaml.github.dsl.github
-import com.github.seepick.kaml.github.yaml.toYamlString
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.string.shouldContain
@@ -18,7 +17,7 @@ class GithubTest : DescribeSpec({
         it("name") {
             Kaml.github {
                 name = "Continuous Integration"
-            }.toYamlString() shouldContain
+            }.toYaml() shouldContain
                     """
                 name: Continuous Integration
                 """.trimIndent()
@@ -30,7 +29,7 @@ class GithubTest : DescribeSpec({
                 triggers {
                     onPushBranches("main")
                 }
-            }.toYamlString() shouldContain
+            }.toYaml() shouldContain
                     """
                 |on:
                 |  push:
@@ -43,7 +42,7 @@ class GithubTest : DescribeSpec({
                 triggers {
                     cron("0 0 * * *")
                 }
-            }.toYamlString() shouldContain
+            }.toYaml() shouldContain
                     """
                 |on:
                 |  schedule:
@@ -56,7 +55,7 @@ class GithubTest : DescribeSpec({
                     manual()
                     // support input values
                 }
-            }.toYamlString() shouldContain
+            }.toYaml() shouldContain
                     """
                 |on:
                 |  workflow_dispatch:
@@ -73,7 +72,7 @@ class GithubTest : DescribeSpec({
                         runsOn = Runtime.UbuntuLatest
                     }
                 }
-            }.toYamlString() shouldContain
+            }.toYaml() shouldContain
                     """
                 |jobs:
                 |  jobId:
@@ -92,7 +91,7 @@ class GithubTest : DescribeSpec({
                         }
                     }
                 }
-            }.toYamlString() shouldContain
+            }.toYaml() shouldContain
                     """
                 |    steps:
                 |      - name: Checkout Code
@@ -132,7 +131,7 @@ class GithubTest : DescribeSpec({
                         }
                     }
                 }
-            }.toYamlString() shouldBeEqual """
+            }.toYaml() shouldBeEqual """
                 name: FTC Yaml Name
                 on:
                   push:

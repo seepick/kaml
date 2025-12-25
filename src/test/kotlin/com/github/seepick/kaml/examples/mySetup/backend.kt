@@ -2,17 +2,18 @@ package com.github.seepick.kaml.examples.mySetup
 
 import com.github.seepick.kaml.Image
 import com.github.seepick.kaml.k8s.XK8s
-import com.github.seepick.kaml.k8s.deployment.deployment
-import com.github.seepick.kaml.k8s.service.ServiceType
-import com.github.seepick.kaml.k8s.service.service
+import com.github.seepick.kaml.k8s.artifacts.deployment.deployment
+import com.github.seepick.kaml.k8s.artifacts.service.ServiceType
+import com.github.seepick.kaml.k8s.artifacts.service.service
 
+private val artifactId = "backend"
 private val Image.Companion.demoApp get() = Image("docker.io/library/demo-app", version = "latest")
-private val podLabel = K8sConfigMap.podLabelKey to "${groupId}-backend"
+private val podLabel = KamlConfigMap.podLabelKey to "${KamlConfigMap.groupId}-backend"
 
-fun XK8s.backendDeployment(groupId: String) = deployment {
+fun XK8s.backendDeployment() = deployment {
     // TODO "kubectl.kubernetes.io/last-applied-configuration" annotation?
     metadata {
-        name = "${groupId}-backend-deployment"
+        name = "${configMap.groupId}-$artifactId-deployment"
     }
     selector {
         matchLabels += podLabel
@@ -21,11 +22,11 @@ fun XK8s.backendDeployment(groupId: String) = deployment {
     replicas = 3
     template {
         metadata {
-            name = "${groupId}-backend-pod"
+            name = "${configMap.groupId}-$artifactId-pod"
             labels += podLabel
         }
         container {
-            name = "${groupId}-backend-container"
+            name = "${configMap.groupId}-$artifactId-container"
             image = Image.demoApp
             env += "PORT" to "\"\"8080\"\"" // FIXME quote fix?! otherwise "cannot convert int64 to string"
             env += "DB_JDBC" to configMap.dbJdbc
@@ -40,14 +41,14 @@ fun XK8s.backendDeployment(groupId: String) = deployment {
     // $ curl localhost:8080
 }
 
-fun XK8s.backendService(groupId: String) = service {
+fun XK8s.backendService(backendPort: Int) = service {
     metadata {
-        name = "${groupId}-backend-service"
+        name = "${configMap.groupId}-$artifactId-service"
     }
     type = ServiceType.NodePort // implicitly also a load balancer
     selector += podLabel
     ports {
-        targetPort = 8080
+        targetPort = backendPort // TODO correct port?!
         port = 8080
         nodePort = 30080
     }

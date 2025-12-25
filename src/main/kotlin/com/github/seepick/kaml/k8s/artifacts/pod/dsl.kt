@@ -1,12 +1,12 @@
-package com.github.seepick.kaml.k8s.pod
+package com.github.seepick.kaml.k8s.artifacts.pod
 
 import com.github.seepick.kaml.KamlDsl
-import com.github.seepick.kaml.k8s.Container
-import com.github.seepick.kaml.k8s.ContainerDsl
 import com.github.seepick.kaml.k8s.K8s
-import com.github.seepick.kaml.k8s.K8sApiVersion
-import com.github.seepick.kaml.k8s.Metadata
-import com.github.seepick.kaml.k8s.MetadataDsl
+import com.github.seepick.kaml.k8s.shared.Container
+import com.github.seepick.kaml.k8s.shared.ContainerDsl
+import com.github.seepick.kaml.k8s.shared.K8sApiVersion
+import com.github.seepick.kaml.k8s.shared.Metadata
+import com.github.seepick.kaml.k8s.shared.MetadataDsl
 
 fun K8s.pod(code: PodDsl.() -> Unit): Pod =
     PodDsl().apply(code).build()

@@ -1,8 +1,10 @@
-package com.github.seepick.kaml.k8s.service
+package com.github.seepick.kaml.k8s.artifacts
 
 import com.github.seepick.kaml.Kaml
-import com.github.seepick.kaml.k8s.Protocol
+import com.github.seepick.kaml.k8s.artifacts.service.ServiceType
+import com.github.seepick.kaml.k8s.artifacts.service.service
 import com.github.seepick.kaml.k8s.k8s
+import com.github.seepick.kaml.k8s.shared.Protocol
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.equals.shouldBeEqual
 
@@ -20,7 +22,7 @@ class ServiceTest : StringSpec({
                 protocol = Protocol.TCP
             }
             selector += "app" to "my-pod-label"
-        }.toYamlString() shouldBeEqual """
+        }.toYaml() shouldBeEqual """
             apiVersion: v1
             kind: Service
             metadata:
@@ -29,9 +31,9 @@ class ServiceTest : StringSpec({
               type: NodePort
               ports:
                 - protocol: TCP
+                  nodePort: 30080
                   port: 80
                   targetPort: 80
-                  nodePort: 30080
               selector:
                 app: my-pod-label
         """.trimIndent()

@@ -5,15 +5,15 @@ import com.amihaiemil.eoyaml.YamlMappingBuilder
 import com.amihaiemil.eoyaml.YamlNode
 import com.amihaiemil.eoyaml.YamlSequence
 import com.amihaiemil.eoyaml.YamlSequenceBuilder
-import com.github.seepick.kaml.k8s.Manifest
-import com.github.seepick.kaml.k8s.addManifest
+import com.github.seepick.kaml.k8s.shared.Manifest
+import com.github.seepick.kaml.k8s.shared.addManifest
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 object YamlRoot {
-    fun <Spec> k8sManifest(manifest: Manifest<Spec>, spec: YamlMapDsl.() -> Unit) =
+    fun <Spec> k8sManifest(manifest: Manifest<Spec>, skipSpec: Boolean = false, spec: YamlMapDsl.() -> Unit) =
         map {
-            addManifest(manifest, spec)
+            addManifest(manifest, skipSpec, spec)
         }
 
     fun map(code: YamlMapDsl.() -> Unit) =

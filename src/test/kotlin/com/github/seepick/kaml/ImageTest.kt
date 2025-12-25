@@ -6,10 +6,10 @@ import io.kotest.matchers.equals.shouldBeEqual
 class ImageTest : DescribeSpec({
     describe("format") {
         it("docker") {
-            Image("group", "name", "version").format(ImageFormatter.Docker) shouldBeEqual "group:name:version"
+            Image("name", "group", "version").format(ImageFormatter.Docker) shouldBeEqual "group:name:version"
         }
         it("github") {
-            Image("group", "name", "version").format(ImageFormatter.Github) shouldBeEqual "group/name@version"
+            Image("name", "group", "version").format(ImageFormatter.Github) shouldBeEqual "group/name@version"
         }
     }
     describe("parse") {
@@ -24,9 +24,7 @@ class ImageTest : DescribeSpec({
         }
         it("group and name and version") {
             Image.parse("group/name@version", ImageFormatter.Github) shouldBeEqual Image(
-                group = "group",
-                name = "name",
-                version = "version"
+                group = "group", name = "name", version = "version"
             )
         }
     }

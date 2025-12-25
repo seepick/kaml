@@ -1,13 +1,13 @@
-package com.github.seepick.kaml.k8s.deployment
+package com.github.seepick.kaml.k8s.artifacts.deployment
 
 import com.github.seepick.kaml.KamlDsl
 import com.github.seepick.kaml.Konfig
 import com.github.seepick.kaml.handleResultOrInvalids
 import com.github.seepick.kaml.k8s.K8s
-import com.github.seepick.kaml.k8s.Metadata
-import com.github.seepick.kaml.k8s.MetadataDsl
 import com.github.seepick.kaml.k8s.XK8s
-import com.github.seepick.kaml.k8s.pod.PodOrTemplateDsl
+import com.github.seepick.kaml.k8s.artifacts.pod.PodOrTemplateDsl
+import com.github.seepick.kaml.k8s.shared.Metadata
+import com.github.seepick.kaml.k8s.shared.MetadataDsl
 
 fun K8s.deployment(konfig: Konfig = Konfig.default, code: DeploymentDsl.() -> Unit): Deployment =
     DeploymentDsl(konfig).apply(code).build()

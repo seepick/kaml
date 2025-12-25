@@ -1,10 +1,11 @@
-package com.github.seepick.kaml.k8s.deployment
+package com.github.seepick.kaml.k8s.artifacts
 
 import com.github.seepick.kaml.Image
 import com.github.seepick.kaml.Kaml
 import com.github.seepick.kaml.KamlValidationException
 import com.github.seepick.kaml.Konfig
 import com.github.seepick.kaml.ValidationLevel
+import com.github.seepick.kaml.k8s.artifacts.deployment.deployment
 import com.github.seepick.kaml.k8s.k8s
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
@@ -39,7 +40,7 @@ class DeploymentTest : DescribeSpec({
                         // TODO ports: - containerPort: 80
                     }
                 }
-            }.toYamlString() shouldBeEqual """
+            }.toYaml() shouldBeEqual """
                 apiVersion: apps/v1
                 kind: Deployment
                 metadata:

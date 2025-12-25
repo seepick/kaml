@@ -2,10 +2,10 @@ package com.github.seepick.kaml.examples
 
 import com.github.seepick.kaml.Image
 import com.github.seepick.kaml.Kaml
-import com.github.seepick.kaml.k8s.Protocol
-import com.github.seepick.kaml.k8s.deployment.deployment
+import com.github.seepick.kaml.k8s.artifacts.deployment.deployment
+import com.github.seepick.kaml.k8s.artifacts.service.service
 import com.github.seepick.kaml.k8s.k8s
-import com.github.seepick.kaml.k8s.service.service
+import com.github.seepick.kaml.k8s.shared.Protocol
 
 object Examples {
 

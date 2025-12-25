@@ -2,9 +2,8 @@ package com.github.seepick.kaml.examples.mySetup
 
 import com.github.seepick.kaml.k8s.XK8s
 
-val groupId = "kaml"
-
-object K8sConfigMap {
+object KamlConfigMap {
+    val groupId = "kaml"
     const val podLabelKey = "type"
     val dbHostname = "${groupId}-db-host" // actually the service name
     const val dbPort = 5432
@@ -15,4 +14,4 @@ object K8sConfigMap {
     val dbJdbc = "jdbc:postgresql://${dbHostname}:${dbPort}/$dbName"
 }
 
-val XK8s.configMap get() = K8sConfigMap
+val XK8s.configMap get() = KamlConfigMap

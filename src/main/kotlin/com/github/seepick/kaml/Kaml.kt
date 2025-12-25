@@ -1,12 +1,16 @@
 package com.github.seepick.kaml
 
+import com.amihaiemil.eoyaml.YamlNode
+import com.github.seepick.kaml.yaml.toCleanYamlString
 import java.io.File
 
 object Kaml // extension functions
 class XKaml(val konfig: Konfig = Konfig.default)
 
-fun interface KamlYamlOutput {
-    fun toYaml(): String
+interface KamlYamlOutput {
+    fun toYamlNode(): YamlNode
+    fun toYaml(): String =
+        toYamlNode().toCleanYamlString()
 }
 
 @DslMarker

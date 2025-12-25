@@ -1,7 +1,8 @@
-package com.github.seepick.kaml.k8s.pod
+package com.github.seepick.kaml.k8s.artifacts
 
 import com.github.seepick.kaml.Image
 import com.github.seepick.kaml.Kaml
+import com.github.seepick.kaml.k8s.artifacts.pod.pod
 import com.github.seepick.kaml.k8s.k8s
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.equals.shouldBeEqual
@@ -17,7 +18,7 @@ class PodTest : DescribeSpec({
                 }
                 container {
                     name = "my-containername"
-                    image = Image(name = "my-imagename", version = "my-imageVersion")
+                    image = Image.Companion(name = "my-imagename", version = "my-imageVersion")
                     ports {
                         containerPort = 80
                         name = "my-portname"

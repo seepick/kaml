@@ -1,13 +1,13 @@
 package com.github.seepick.kaml.examples.mySetup
 
 import com.github.seepick.kaml.Image
-import com.github.seepick.kaml.examples.mySetup.K8sConfigMap.podLabelKey
+import com.github.seepick.kaml.examples.mySetup.KamlConfigMap.podLabelKey
 import com.github.seepick.kaml.k8s.XK8s
-import com.github.seepick.kaml.k8s.deployment.deployment
-import com.github.seepick.kaml.k8s.service.ServiceType
-import com.github.seepick.kaml.k8s.service.service
+import com.github.seepick.kaml.k8s.artifacts.deployment.deployment
+import com.github.seepick.kaml.k8s.artifacts.service.ServiceType
+import com.github.seepick.kaml.k8s.artifacts.service.service
 
-private val podLabel = podLabelKey to "${groupId}-db"
+private val podLabel = podLabelKey to "${KamlConfigMap.groupId}-db"
 
 data class DbDeploymentConfig(
     val user: String,

@@ -1,13 +1,16 @@
-package com.github.seepick.kaml.k8s.deployment
+package com.github.seepick.kaml.k8s.artifacts.deployment
 
 import com.github.seepick.kaml.KamlYamlOutput
 import com.github.seepick.kaml.Validatable
 import com.github.seepick.kaml.buildValidationResult
-import com.github.seepick.kaml.k8s.Container
-import com.github.seepick.kaml.k8s.K8sApiVersion
-import com.github.seepick.kaml.k8s.Manifest
-import com.github.seepick.kaml.k8s.ManifestKind
-import com.github.seepick.kaml.k8s.Metadata
+import com.github.seepick.kaml.k8s.shared.Container
+import com.github.seepick.kaml.k8s.shared.K8sApiVersion
+import com.github.seepick.kaml.k8s.shared.Manifest
+import com.github.seepick.kaml.k8s.shared.ManifestKind
+import com.github.seepick.kaml.k8s.shared.Metadata
+import com.github.seepick.kaml.k8s.shared.addContainers
+import com.github.seepick.kaml.k8s.shared.addMetadata
+import com.github.seepick.kaml.yaml.YamlRoot
 
 data class Deployment(
     override val metadata: Metadata,
@@ -18,7 +21,20 @@ data class Deployment(
 
     override val kind: ManifestKind = ManifestKind.Deployment
 
-    override fun toYaml() = toYamlString()
+    override fun toYamlNode() = YamlRoot.k8sManifest(this) {
+        add("replicas", spec.replicas)
+        map("selector") {
+            map("matchLabels") {
+                addAll(spec.selector.matchLabels)
+            }
+        }
+        map("template") {
+            addMetadata(spec.template.metadata)
+            map("spec") {
+                addContainers(spec.template.containers)
+            }
+        }
+    }
 }
 
 
