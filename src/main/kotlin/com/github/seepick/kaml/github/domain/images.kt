@@ -5,18 +5,15 @@ import com.github.seepick.kaml.Image
 data class RuntimeImage(val image: Image) : Image by image
 
 enum class Runtime(val image: RuntimeImage) {
-    UbuntuLatest(Images.ubuntuLatest);
+    UbuntuLatest(Image.ubuntuLatest);
 
     companion object {
         val default = UbuntuLatest
     }
 }
 
+@Deprecated("Use Image instead")
 object Images {
-
-    val nginx = Image(name = "nginx")
-
-    val ubuntuLatest = RuntimeImage(Image(name = "ubuntu-latest"))
 
     object Github {
         /** actions/checkout@v4 */

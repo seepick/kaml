@@ -18,6 +18,7 @@ version = "1.1.0"
 dependencies {
     implementation("com.amihaiemil.web:eo-yaml:8.0.6")
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.13")
+    runtimeOnly("ch.qos.logback:logback-classic:1.5.18")
 
     listOf("framework-engine", "runner-junit5", "assertions-core", "property").forEach { artifactId ->
         testImplementation("io.kotest:kotest-$artifactId:6.0.7")
@@ -52,7 +53,7 @@ publishing {
             pom {
                 name.set(project.name)
                 description.set("Part of the ${rootProject.name} project")
-                url.set("https://github.com/seepick/kaml") // TODO use github pages URL instead
+                url.set("https://github.com/seepick/kaml")
             }
         }
     }
