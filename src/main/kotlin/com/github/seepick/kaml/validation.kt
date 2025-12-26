@@ -35,8 +35,8 @@ class KamlValidationException internal constructor(
 
 class ValidationDsl {
     val issues = mutableListOf<ValidationIssue>()
-    fun check(conditionValid: () -> Boolean, message: String) {
-        if (!conditionValid.invoke()) {
+    fun check(isValid: Boolean, message: String) {
+        if (!isValid) {
             issues += ValidationIssue(message)
         }
     }
@@ -50,13 +50,13 @@ class ValidationDsl {
     }
 }
 
-fun buildValidationResult(code: ValidationDsl.() -> Unit): ValidationResult {
+fun validation(code: ValidationDsl.() -> Unit): ValidationResult {
     val issues = ValidationDsl().apply(code).issues
     return if (issues.isEmpty()) ValidationResult.Valid
     else ValidationResult.Invalid(issues)
 }
 
-fun <D> handleResultOrInvalids(konfig: Konfig, domain: D, vararg results: ValidationResult): D {
+fun <D> handleValidation(konfig: Konfig, domain: D, vararg results: ValidationResult): D {
     val issues = results.filterIsInstance<ValidationResult.Invalid>().flatMap { it.issues }
     return if (issues.isEmpty()) domain
     else {
@@ -69,7 +69,7 @@ fun <D> handleResultOrInvalids(konfig: Konfig, domain: D, vararg results: Valida
             }
 
             ValidationLevel.FailOnError -> throw KamlValidationException(
-                "Validation failed",
+                "Validation failed!",
                 ValidationResult.Invalid(issues)
             )
         }

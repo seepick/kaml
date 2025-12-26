@@ -16,5 +16,5 @@ enum class K8sApiVersion(override val yamlValue: String) : ApiVersion {
 //data class CustomApiVersion(val group...name: String) : ApiVersion
 
 enum class Protocol(val yamlValue: String) {
-    TCP("TCP"), UDP("UDP")
+    TCP("TCP"), UDP("UDP"), SCTP("SCTP")
 }

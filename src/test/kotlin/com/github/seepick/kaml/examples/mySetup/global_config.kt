@@ -1,17 +1,27 @@
 package com.github.seepick.kaml.examples.mySetup
 
+import com.github.seepick.kaml.examples.mySetup.KamlConfig.groupId
 import com.github.seepick.kaml.k8s.XK8s
 
-object KamlConfigMap {
+// TODO make it a data class, pass through config values, make it explicit!
+object KamlConfig {
     val groupId = "kaml"
+
     const val podLabelKey = "type"
-    val dbHostname = "${groupId}-db-host" // actually the service name
-    const val dbPort = 5432
-    // TODO configMap: https://www.digitalocean.com/community/tutorials/how-to-deploy-postgres-to-kubernetes-cluster
-    // PersistentVolume
-    val dbUserPass = "postgres" to "postgres"
-    val dbName = "${groupId}-db"
-    val dbJdbc = "jdbc:postgresql://${dbHostname}:${dbPort}/$dbName"
+    // should be applied to all our declarations
+    val teamKamlLabel = "provider" to "team-kaml"
+
+    val db = Db
 }
 
-val XK8s.configMap get() = KamlConfigMap
+object Db {
+    val serviceName = "${groupId}-db-service" // maps to the hostname to be used by other pods
+    val port = 5432
+    // TODO configMap: https://www.digitalocean.com/community/tutorials/how-to-deploy-postgres-to-kubernetes-cluster
+    // PersistentVolume
+    val userPass = "postgres" to "postgres"
+    val name = "${groupId}-db"
+    val jdbc = "jdbc:postgresql://${serviceName}:${port}/$name"
+}
+
+val XK8s.configMap get() = KamlConfig

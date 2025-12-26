@@ -8,11 +8,12 @@ import com.github.seepick.kaml.k8s.artifacts.service.service
 
 private val artifactId = "frontend"
 private val Image.Companion.frontend get() = Image("docker.io/library/demo-$artifactId", version = "latest")
-private val podLabel = KamlConfigMap.podLabelKey to "${KamlConfigMap.groupId}-$artifactId"
+private val podLabel = KamlConfig.podLabelKey to "${KamlConfig.groupId}-$artifactId"
 
 fun XK8s.frontendDeployment(backendServiceHostAndPort: String) = deployment {
     metadata {
         name = "${configMap.groupId}-$artifactId-deployment"
+        labels += configMap.teamKamlLabel
     }
     selector {
         matchLabels += podLabel
@@ -22,6 +23,7 @@ fun XK8s.frontendDeployment(backendServiceHostAndPort: String) = deployment {
         metadata {
             name = "${configMap.groupId}-$artifactId-pod"
             labels += podLabel
+            labels += configMap.teamKamlLabel
         }
         container {
             name = "${configMap.groupId}-$artifactId-container"
@@ -34,6 +36,7 @@ fun XK8s.frontendDeployment(backendServiceHostAndPort: String) = deployment {
 fun XK8s.frontendService() = service {
     metadata {
         name = "${configMap.groupId}-$artifactId-service"
+        labels += configMap.teamKamlLabel
     }
     // FIXME check type and ports
     type = ServiceType.NodePort // implicitly also a load balancer

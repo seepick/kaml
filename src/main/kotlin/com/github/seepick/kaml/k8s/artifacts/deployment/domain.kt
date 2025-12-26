@@ -2,7 +2,6 @@ package com.github.seepick.kaml.k8s.artifacts.deployment
 
 import com.github.seepick.kaml.KamlYamlOutput
 import com.github.seepick.kaml.Validatable
-import com.github.seepick.kaml.buildValidationResult
 import com.github.seepick.kaml.k8s.shared.Container
 import com.github.seepick.kaml.k8s.shared.K8sApiVersion
 import com.github.seepick.kaml.k8s.shared.Manifest
@@ -10,8 +9,10 @@ import com.github.seepick.kaml.k8s.shared.ManifestKind
 import com.github.seepick.kaml.k8s.shared.Metadata
 import com.github.seepick.kaml.k8s.shared.addContainers
 import com.github.seepick.kaml.k8s.shared.addMetadata
+import com.github.seepick.kaml.validation
 import com.github.seepick.kaml.yaml.YamlRoot
 
+/** See https://kubernetes.io/docs/concepts/workloads/controllers/deployment/ */
 data class Deployment(
     override val metadata: Metadata,
     override val spec: DeploymentSpec,
@@ -60,8 +61,8 @@ data class Template(
         val default = Template(Metadata.default, containers = emptyList())
     }
 
-    override fun validate() = buildValidationResult {
-        check({ !containers.isEmpty() }, "Template must contain at least one container ($metadata)")
+    override fun validate() = validation {
+        check(!containers.isEmpty(), "Template must contain at least one container ($metadata)")
         containers.forEach { mergeWith(it) }
     }
 }

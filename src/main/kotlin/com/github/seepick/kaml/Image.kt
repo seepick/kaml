@@ -15,7 +15,7 @@ interface Image {
     companion object {
         val nginx = Image(name = "nginx")
         val ubuntuLatest = RuntimeImage(Image(name = "ubuntu-latest"))
-
+        val postgres = Image("postgres", version = "18.1-alpine")
 
         fun parse(input: String, formatter: ImageFormatter): Image {
             val (group, rest) = if (input.contains(formatter.groupNameSplitSymbol)) {

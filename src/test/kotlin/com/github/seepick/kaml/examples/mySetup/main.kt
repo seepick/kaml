@@ -16,11 +16,12 @@ fun main() {
         backendServiceHostAndPort =
             "${backendService.metadata.name ?: kerror("service metadata must have name")}:$backendPort"
     )
+    val dbConfig = KamlConfig.toDbConfig()
     listOf(
-//        k8s.dbDeployment(groupId, K8sConfigMap.toDbDeploymentConfig()) to "db.deployment.yaml",
-//        k8s.dbService(groupId) to "db.service.yaml",
-        k8s.backendDeployment() to "app.deployment.yaml",
-        backendService to "app.service.yaml",
+        k8s.dbDeployment(KamlConfig.groupId, dbConfig) to "db.deployment.yaml",
+        k8s.dbService(KamlConfig.groupId, dbConfig) to "db.service.yaml",
+        k8s.backendDeployment() to "backend.deployment.yaml",
+        backendService to "backend.service.yaml",
 //        frontendDeployment to "frontend.deployment.yaml",
 //        k8s.frontendService() to "frontend.service.yaml",
     ).saveAll(targetFolder = File("build/k8s"))
@@ -37,8 +38,8 @@ private fun List<Pair<KamlYamlOutput, String>>.saveAll(targetFolder: File) {
     }
 }
 
-private fun KamlConfigMap.toDbDeploymentConfig() = DbDeploymentConfig(
-    user = KamlConfigMap.dbUserPass.first,
-    pass = KamlConfigMap.dbUserPass.second,
-    port = KamlConfigMap.dbPort,
+private fun KamlConfig.toDbConfig() = DbConfig(
+    user = KamlConfig.db.userPass.first,
+    pass = KamlConfig.db.userPass.second,
+    port = KamlConfig.db.port,
 )

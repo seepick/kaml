@@ -22,7 +22,7 @@ class MetadataDsl {
     var namespace: String? = null
 
     /** Arbitrary key-value information; for grouping/selecting. */
-    val labels = mutableMapOf<String, String>()
+    val labels = mutableMapOf<String, String>() // TODO could create Label type
 
     fun build() = Metadata(
         name = name,

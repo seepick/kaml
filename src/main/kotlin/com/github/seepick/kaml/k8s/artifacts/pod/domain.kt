@@ -9,6 +9,7 @@ import com.github.seepick.kaml.k8s.shared.Metadata
 import com.github.seepick.kaml.k8s.shared.addContainers
 import com.github.seepick.kaml.yaml.YamlRoot
 
+/** See https://kubernetes.io/docs/concepts/workloads/pods/ */
 data class Pod(
     override val apiVersion: ApiVersion,
     override val metadata: Metadata,

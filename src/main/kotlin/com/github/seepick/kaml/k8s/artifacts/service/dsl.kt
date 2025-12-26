@@ -2,6 +2,7 @@ package com.github.seepick.kaml.k8s.artifacts.service
 
 import com.github.seepick.kaml.KamlDsl
 import com.github.seepick.kaml.Konfig
+import com.github.seepick.kaml.handleValidation
 import com.github.seepick.kaml.k8s.K8s
 import com.github.seepick.kaml.k8s.XK8s
 import com.github.seepick.kaml.k8s.shared.Metadata
@@ -35,12 +36,15 @@ class ServiceDsl(private val konfig: Konfig) {
     /** Labels defined in the pod's (deployment template's) metadata. */
     val selector = mutableMapOf<String, String>()
 
-    fun build() = Service(
-        metadata = metadata,
-        spec = ServiceSpec(
-            type = type,
-            ports = ports,
-            selector = selector,
+    fun build(): Service {
+        val s = Service(
+            metadata = metadata,
+            spec = ServiceSpec(
+                type = type,
+                ports = ports,
+                selector = selector,
+            )
         )
-    )
+        return handleValidation(konfig, s, s.validate())
+    }
 }

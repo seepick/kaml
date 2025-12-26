@@ -2,7 +2,7 @@ package com.github.seepick.kaml.k8s.artifacts.deployment
 
 import com.github.seepick.kaml.KamlDsl
 import com.github.seepick.kaml.Konfig
-import com.github.seepick.kaml.handleResultOrInvalids
+import com.github.seepick.kaml.handleValidation
 import com.github.seepick.kaml.k8s.K8s
 import com.github.seepick.kaml.k8s.XK8s
 import com.github.seepick.kaml.k8s.artifacts.pod.PodOrTemplateDsl
@@ -50,7 +50,7 @@ class DeploymentDsl(private val konfig: Konfig) {
                 template = template,
             ),
         )
-        return handleResultOrInvalids(
+        return handleValidation(
             konfig, deployment,
             deployment.spec.template.validate(),
         )

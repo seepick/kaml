@@ -4,8 +4,8 @@ import com.github.seepick.kaml.Image
 import com.github.seepick.kaml.ImageFormatter
 import com.github.seepick.kaml.KamlDsl
 import com.github.seepick.kaml.Validatable
-import com.github.seepick.kaml.buildValidationResult
 import com.github.seepick.kaml.kerror
+import com.github.seepick.kaml.validation
 import com.github.seepick.kaml.yaml.YamlMapDsl
 
 data class Container(
@@ -13,11 +13,11 @@ data class Container(
     /** Mandatory by k8s */
     val name: String,
     // resources = {}
-    val ports: List<Port>,
+    val ports: List<ContainerPort>,
     val env: Map<String, Any>,
 ) : Validatable {
-    override fun validate() = buildValidationResult {
-        check({ name.isNotEmpty() }, "Container name must not be empty")
+    override fun validate() = validation {
+        check(name.isNotEmpty(), "Container name must not be empty")
     }
 }
 
@@ -29,9 +29,9 @@ class ContainerDsl {
     var image: Image? = null
     val env = mutableMapOf<String, Any>()
 
-    private val ports = mutableListOf<Port>()
-    fun ports(code: PortDsl.() -> Unit) {
-        ports += PortDsl().apply(code).build()
+    private val ports = mutableListOf<ContainerPort>()
+    fun ports(code: ContainerPortDsl.() -> Unit) {
+        ports += ContainerPortDsl().apply(code).build()
     }
 
     internal fun build() = Container(
@@ -48,7 +48,7 @@ fun YamlMapDsl.addContainers(containers: List<Container>) {
             flatMap {
                 addIfNotNull("name", container.name)
                 add("image", container.image.format(ImageFormatter.Docker))
-                addPorts(container.ports)
+                addContainerPorts(container.ports)
                 addEnv(container.env)
             }
         }
