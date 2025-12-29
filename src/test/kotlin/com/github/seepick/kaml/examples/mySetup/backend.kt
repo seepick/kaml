@@ -5,17 +5,20 @@ import com.github.seepick.kaml.k8s.XK8s
 import com.github.seepick.kaml.k8s.artifacts.deployment.deployment
 import com.github.seepick.kaml.k8s.artifacts.service.ServiceType
 import com.github.seepick.kaml.k8s.artifacts.service.service
+import com.github.seepick.kaml.k8s.shared.Gi
+import com.github.seepick.kaml.k8s.shared.Mi
+import com.github.seepick.kaml.k8s.shared.milliCpu
 
 private val artifactId = "backend"
 private val demoAppVersion = "2" // "latest"
 private val Image.Companion.demoApp get() = Image("docker.io/library/demo-app", version = demoAppVersion)
-private val podLabel = KamlConfig.podLabelKey to "${KamlConfig.groupId}-backend"
+private val podLabel = AppConfig.labels.podLabelKey to "${AppConfig.groupId}-backend"
 
-fun XK8s.backendDeployment() = deployment {
+fun XK8s.backendDeployment(configMapRef: String, backendPort: Int) = deployment {
     // TODO "kubectl.kubernetes.io/last-applied-configuration" annotation?
     metadata {
-        name = "${configMap.groupId}-$artifactId-deployment"
-        labels += configMap.teamKamlLabel
+        name = "${appConfig.groupId}-$artifactId-deployment"
+        labels += appConfig.labels.teamKamlLabel
     }
     selector {
         matchLabels += podLabel
@@ -24,17 +27,27 @@ fun XK8s.backendDeployment() = deployment {
     replicas = 3
     template {
         metadata {
-            name = "${configMap.groupId}-$artifactId-pod"
+            name = "${appConfig.groupId}-$artifactId-pod"
             labels += podLabel
-            labels += configMap.teamKamlLabel
+            labels += appConfig.labels.teamKamlLabel
         }
         container {
-            name = "${configMap.groupId}-$artifactId-container"
+            name = "${appConfig.groupId}-$artifactId-container"
             image = Image.demoApp
-            env += "PORT" to "\"\"8080\"\"" // FIXME quote fix?! otherwise "cannot convert int64 to string"
-            env += "DB_JDBC" to configMap.db.jdbc
-            env += "DB_USER" to configMap.db.userPass.first
-            env += "DB_PASS" to configMap.db.userPass.second
+            env {
+                configMaps += configMapRef
+                values += "PORT" to "\"\"$backendPort\"\"" // FIXME quote fix?! otherwise "cannot convert int64 to string"
+            }
+            resources {
+                requests {
+                    cpu = 100.milliCpu
+                    memory = 512.Mi
+                }
+                limits {
+                    cpu = 500.milliCpu
+                    memory = 1.Gi
+                }
+            }
         }
     }
     // TODO ready/health probes
@@ -45,8 +58,8 @@ fun XK8s.backendDeployment() = deployment {
 
 fun XK8s.backendService(backendPort: Int) = service {
     metadata {
-        name = "${configMap.groupId}-$artifactId-service"
-        labels += configMap.teamKamlLabel
+        name = "${appConfig.groupId}-$artifactId-service"
+        labels += appConfig.labels.teamKamlLabel
     }
     type = ServiceType.NodePort // implicitly also a load balancer
     selector += podLabel

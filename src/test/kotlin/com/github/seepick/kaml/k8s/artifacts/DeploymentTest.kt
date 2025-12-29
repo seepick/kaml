@@ -2,8 +2,8 @@ package com.github.seepick.kaml.k8s.artifacts
 
 import com.github.seepick.kaml.Image
 import com.github.seepick.kaml.Kaml
+import com.github.seepick.kaml.KamlKonfig
 import com.github.seepick.kaml.KamlValidationException
-import com.github.seepick.kaml.Konfig
 import com.github.seepick.kaml.ValidationLevel
 import com.github.seepick.kaml.k8s.artifacts.deployment.deployment
 import com.github.seepick.kaml.k8s.k8s
@@ -62,7 +62,7 @@ class DeploymentTest : DescribeSpec({
         }
     }
     describe("Given strictness enabled") {
-        val strictKonfig = Konfig(ValidationLevel.FailOnError)
+        val strictKonfig = KamlKonfig(ValidationLevel.FailOnError)
         it("When no container Then throw") {
             shouldThrow<KamlValidationException> {
                 Kaml.k8s.deployment(strictKonfig) {

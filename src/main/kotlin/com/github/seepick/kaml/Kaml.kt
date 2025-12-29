@@ -5,7 +5,7 @@ import com.github.seepick.kaml.yaml.toCleanYamlString
 import java.io.File
 
 object Kaml // extension functions
-class XKaml(val konfig: Konfig = Konfig.default)
+class XKaml(val konfig: KamlKonfig = KamlKonfig.default)
 
 interface KamlYamlOutput {
     fun toYamlNode(): YamlNode
@@ -26,10 +26,10 @@ internal fun kerror(message: String): Nothing {
     throw KamlException(message)
 }
 
-data class Konfig(
+data class KamlKonfig(
     val validationLevel: ValidationLevel
 ) {
     companion object {
-        val default = Konfig(ValidationLevel.default)
+        val default = KamlKonfig(ValidationLevel.default)
     }
 }

@@ -1,7 +1,7 @@
 package com.github.seepick.kaml.k8s.artifacts.deployment
 
 import com.github.seepick.kaml.KamlDsl
-import com.github.seepick.kaml.Konfig
+import com.github.seepick.kaml.KamlKonfig
 import com.github.seepick.kaml.handleValidation
 import com.github.seepick.kaml.k8s.K8s
 import com.github.seepick.kaml.k8s.XK8s
@@ -9,14 +9,14 @@ import com.github.seepick.kaml.k8s.artifacts.pod.PodOrTemplateDsl
 import com.github.seepick.kaml.k8s.shared.Metadata
 import com.github.seepick.kaml.k8s.shared.MetadataDsl
 
-fun K8s.deployment(konfig: Konfig = Konfig.default, code: DeploymentDsl.() -> Unit): Deployment =
+fun K8s.deployment(konfig: KamlKonfig = KamlKonfig.default, code: DeploymentDsl.() -> Unit): Deployment =
     DeploymentDsl(konfig).apply(code).build()
 
 fun XK8s.deployment(code: DeploymentDsl.() -> Unit): Deployment =
     K8s.deployment(konfig, code)
 
 @KamlDsl
-class DeploymentDsl(private val konfig: Konfig) {
+class DeploymentDsl(private val konfig: KamlKonfig) {
 
     companion object {
         private const val DEFAULT_NAME = "default-deployment-name"

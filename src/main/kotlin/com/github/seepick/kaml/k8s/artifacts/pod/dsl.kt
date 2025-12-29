@@ -8,6 +8,11 @@ import com.github.seepick.kaml.k8s.shared.K8sApiVersion
 import com.github.seepick.kaml.k8s.shared.Metadata
 import com.github.seepick.kaml.k8s.shared.MetadataDsl
 
+/**
+ * The **smallest workable unit** in k8s; basically an abstraction over a container (=a running image).
+ *
+ * More info: [https://kubernetes.io/docs/concepts/workloads/pods/](https://kubernetes.io/docs/concepts/workloads/pods/)
+ */
 fun K8s.pod(code: PodDsl.() -> Unit): Pod =
     PodDsl().apply(code).build()
 
@@ -22,7 +27,11 @@ abstract class PodOrTemplateDsl<POT>() {
     }
 
     protected val containers = mutableListOf<Container>()
-    /** A list of pods running in a single container. */
+    /**
+     * A list of containers running in a single pod.
+     *
+     * More info: https://kubernetes.io/docs/concepts/workloads/pods/containers/.
+     */
     fun container(code: ContainerDsl.() -> Unit) {
         containers += ContainerDsl().apply(code).build()
     }

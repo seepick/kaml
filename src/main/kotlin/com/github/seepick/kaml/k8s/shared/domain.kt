@@ -6,10 +6,12 @@ interface ApiVersion {
 
 enum class K8sApiVersion(override val yamlValue: String) : ApiVersion {
     Pod("v1"),
+    ConfigMap("v1"),
     Service("v1"),
     Namespace("v1"),
     ResourceQuota("v1"),
     Deployment("apps/v1"),
+    Secret("v1"),
     ReplicaSet("apps/v1"),
 }
 

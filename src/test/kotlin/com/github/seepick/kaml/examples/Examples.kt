@@ -36,8 +36,10 @@ object Examples {
                     containerPort = 5432
                     name = "postgres"
                 }
-                env += "POSTGRES_USER" to postgresCreds.first // use configmap/secrets instead
-                env += "POSTGRES_PASSWORD" to postgresCreds.second
+                env {
+                    values += "POSTGRES_USER" to postgresCreds.first // use configmap/secrets instead
+                    values += "POSTGRES_PASSWORD" to postgresCreds.second
+                }
             }
         }
     }
@@ -63,9 +65,11 @@ object Examples {
                     containerPort = 8080
                     name = "backend-port"
                 }
-                env += "POSTGRES_HOST" to dbServiceName
-                env += "POSTGRES_USER" to postgresCreds.first // use configmap/secrets instead
-                env += "POSTGRES_PASSWORD" to postgresCreds.second
+                env {
+                    values += "POSTGRES_HOST" to dbServiceName
+                    values += "POSTGRES_USER" to postgresCreds.first // use configmap/secrets instead
+                    values += "POSTGRES_PASSWORD" to postgresCreds.second
+                }
             }
         }
     }

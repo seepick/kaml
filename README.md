@@ -12,21 +12,21 @@ maintained anymore) to add YAML support to kotlinx.serialization.
 Benefits
 ------------------------------------------------------------------------------------------------------------------------
 
-* *Typesafe*: no more "misplaced indentation" and hours/days of painstaking debugging (use statically typed language and
-  compiler checks)
+* *Typesafe DSL* using statically typed language features and compiler checks (domain types)
+* Sections wrapped by good old `{}`; no more *misplaced indentation* and hours of painstaking debugging
 * _*Auto-completable*_: lowering entrance barrier for new learning (not having to remember all options)
-* From run-time (deploy and wait) to write-time (instant compiler) feedback
+* From run-time (deploy and wait) to write-time (instant compiler) feedback (instead having to wait to apply the changes
+  to a cluster)
 * Use code features and introduce custom abstraction layer on top (specific, reusable functionality; extension
   functions, parameterized blocks)
 * YAML is inlined/flattened-out and always see what's actually happening
-    - no include templating mechanism (dislocated), but maybe add support mode?
-    - inclusions are done in high-level kotlin DSL,
-* Possibility for more sophisticated high-level semantic *checks*
-* Low risk: Can be dropped at any time and continue hand written YAML files instead
+    - no include templating mechanism (dislocated, parameter-hell) as known from other DSLs
+* Configure more sophisticated high-level semantic *checks* (ignore, log warn, fail/throw error)
+* Low risk: Can be dropped at any time and continue with hand written YAML files instead
 * DSLs available for: OpenAPI, GitHub Actions, Azure DevOps, Kubernetes, OpenShift, ...
 
-PS: A Kotlin DSL offers basically the same level of conciseness as a YAML file (speaking in terms of LoC), but its
-advantages lies in other areas.
+PS: A Kotlin DSL offers basically the same level of *conciseness* as a YAML file (speaking in terms of LoC), but its
+advantages actually lies in other areas.
 
 Howto
 ------------------------------------------------------------------------------------------------------------------------
@@ -35,20 +35,28 @@ Example of a Kubernetes Deployment manifest:
 
 ```kotlin
 Kaml.k8s.deployment {
+    val podLabel = "app" to "my-pod"
     metadata {
         name = "my-deployment"
     }
     selector {
-        matchLabels += "app" to "my-container"
+        matchLabels += podLabel
     }
     replicas = 2
     template {
         metadata {
-            labels += "app" to "my-container"
+            labels += podLabel
         }
         container {
             name = "my-container"
+            // or simply: Image.nginx
             image = Image(name = "my-image", version = "latest")
+        }
+        resources {
+            requests {
+                cpu = 0.1.cpu
+                memory = 64.Mi
+            }
         }
     }
 } saveYamlTo File("deployment.yaml")

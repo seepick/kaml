@@ -1,7 +1,7 @@
 package com.github.seepick.kaml.k8s.artifacts.service
 
 import com.github.seepick.kaml.KamlDsl
-import com.github.seepick.kaml.Konfig
+import com.github.seepick.kaml.KamlKonfig
 import com.github.seepick.kaml.handleValidation
 import com.github.seepick.kaml.k8s.K8s
 import com.github.seepick.kaml.k8s.XK8s
@@ -11,15 +11,15 @@ import com.github.seepick.kaml.k8s.shared.ServicePort
 import com.github.seepick.kaml.k8s.shared.ServicePortDsl
 import java.lang.constant.ConstantDescs.DEFAULT_NAME
 
-fun K8s.service(konfig: Konfig = Konfig.default, code: ServiceDsl.() -> Unit): Service =
+fun K8s.service(konfig: KamlKonfig = KamlKonfig.default, code: ServiceDsl.() -> Unit) =
     ServiceDsl(konfig).apply(code).build()
 
-fun XK8s.service(code: ServiceDsl.() -> Unit): Service =
+fun XK8s.service(code: ServiceDsl.() -> Unit) =
     K8s.service(konfig, code)
 
 
 @KamlDsl
-class ServiceDsl(private val konfig: Konfig) {
+class ServiceDsl(private val konfig: KamlKonfig) {
 
     private var metadata = Metadata.default.copy(name = DEFAULT_NAME)
     fun metadata(code: MetadataDsl.() -> Unit) {

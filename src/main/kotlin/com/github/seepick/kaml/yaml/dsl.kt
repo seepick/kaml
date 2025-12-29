@@ -10,10 +10,18 @@ import com.github.seepick.kaml.k8s.shared.addManifest
 import java.time.LocalDate
 import java.time.LocalDateTime
 
+val skipSpec = { _: Any? -> }
+
 object YamlRoot {
-    fun <Spec> k8sManifest(manifest: Manifest<Spec>, skipSpec: Boolean = false, spec: YamlMapDsl.() -> Unit) =
+    fun <Spec> k8sManifest(
+        manifest: Manifest<Spec>,
+        skipSpec: Boolean = false,
+        additional: YamlMapDsl.() -> Unit = {},
+        spec: YamlMapDsl.() -> Unit
+    ) =
         map {
             addManifest(manifest, skipSpec, spec)
+            additional()
         }
 
     fun map(code: YamlMapDsl.() -> Unit) =

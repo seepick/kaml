@@ -5,15 +5,17 @@ import com.github.seepick.kaml.k8s.XK8s
 import com.github.seepick.kaml.k8s.artifacts.deployment.deployment
 import com.github.seepick.kaml.k8s.artifacts.service.ServiceType
 import com.github.seepick.kaml.k8s.artifacts.service.service
+import com.github.seepick.kaml.k8s.shared.Mi
+import com.github.seepick.kaml.k8s.shared.milliCpu
 
 private val artifactId = "frontend"
 private val Image.Companion.frontend get() = Image("docker.io/library/demo-$artifactId", version = "latest")
-private val podLabel = KamlConfig.podLabelKey to "${KamlConfig.groupId}-$artifactId"
+private val podLabel = AppConfig.labels.podLabelKey to "${AppConfig.groupId}-$artifactId"
 
 fun XK8s.frontendDeployment(backendServiceHostAndPort: String) = deployment {
     metadata {
-        name = "${configMap.groupId}-$artifactId-deployment"
-        labels += configMap.teamKamlLabel
+        name = "${appConfig.groupId}-$artifactId-deployment"
+        labels += appConfig.labels.teamKamlLabel
     }
     selector {
         matchLabels += podLabel
@@ -21,22 +23,34 @@ fun XK8s.frontendDeployment(backendServiceHostAndPort: String) = deployment {
     replicas = 3
     template {
         metadata {
-            name = "${configMap.groupId}-$artifactId-pod"
+            name = "${appConfig.groupId}-$artifactId-pod"
             labels += podLabel
-            labels += configMap.teamKamlLabel
+            labels += appConfig.labels.teamKamlLabel
         }
         container {
-            name = "${configMap.groupId}-$artifactId-container"
+            name = "${appConfig.groupId}-$artifactId-container"
             image = Image.frontend
-            env += "BACKEND_URL" to "\"\"https://$backendServiceHostAndPort\"\""
+            env {
+                values += "BACKEND_URL" to "\"\"https://$backendServiceHostAndPort\"\""
+            }
+            resources {
+                requests {
+                    cpu = 100.milliCpu
+                    memory = 64.Mi
+                }
+                limits {
+                    cpu = 500.milliCpu
+                    memory = 128.Mi
+                }
+            }
         }
     }
 }
 
 fun XK8s.frontendService() = service {
     metadata {
-        name = "${configMap.groupId}-$artifactId-service"
-        labels += configMap.teamKamlLabel
+        name = "${appConfig.groupId}-$artifactId-service"
+        labels += appConfig.labels.teamKamlLabel
     }
     // FIXME check type and ports
     type = ServiceType.NodePort // implicitly also a load balancer

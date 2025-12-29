@@ -1,8 +1,8 @@
 package com.github.seepick.kaml.k8s.artifacts
 
 import com.github.seepick.kaml.KamlDsl
+import com.github.seepick.kaml.KamlKonfig
 import com.github.seepick.kaml.KamlYamlOutput
-import com.github.seepick.kaml.Konfig
 import com.github.seepick.kaml.k8s.K8s
 import com.github.seepick.kaml.k8s.XK8s
 import com.github.seepick.kaml.k8s.shared.K8sApiVersion
@@ -13,14 +13,14 @@ import com.github.seepick.kaml.k8s.shared.MetadataDsl
 import com.github.seepick.kaml.kerror
 import com.github.seepick.kaml.yaml.YamlRoot
 
-fun K8s.resourceQuota(konfig: Konfig = Konfig.default, code: ResourceQuotaDsl.() -> Unit) =
+fun K8s.resourceQuota(konfig: KamlKonfig = KamlKonfig.default, code: ResourceQuotaDsl.() -> Unit) =
     ResourceQuotaDsl(konfig).apply(code).build()
 
 fun XK8s.resourceQuota(code: ResourceQuotaDsl.() -> Unit) =
     K8s.resourceQuota(konfig, code)
 
 @KamlDsl
-class ResourceQuotaDsl(private val konfig: Konfig) {
+class ResourceQuotaDsl(private val konfig: KamlKonfig) {
 
     protected var _metadata: Metadata = Metadata.Companion.default
         private set

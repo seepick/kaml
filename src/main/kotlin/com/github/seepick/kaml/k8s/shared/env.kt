@@ -2,10 +2,10 @@ package com.github.seepick.kaml.k8s.shared
 
 import com.github.seepick.kaml.yaml.YamlMapDsl
 
-fun YamlMapDsl.addEnv(env: Map<String, Any>) {
-    if (env.isNotEmpty()) {
+fun YamlMapDsl.addEnv(env: Env) {
+    if (env.values.isNotEmpty()) {
         seq("env") {
-            env.forEach { (name, value) ->
+            env.values.forEach { (name, value) ->
                 flatMap {
                     add("name", name)
                     add("value", value)
@@ -13,4 +13,23 @@ fun YamlMapDsl.addEnv(env: Map<String, Any>) {
             }
         }
     }
+    if (env.configMapRefNames.isNotEmpty() || env.secretRefNames.isNotEmpty()) {
+        seq("envFrom") {
+            env.configMapRefNames.forEach { configMap ->
+                flatMap {
+                    map("configMapRef") {
+                        add("name", configMap)
+                    }
+                }
+            }
+            env.secretRefNames.forEach { secret ->
+                flatMap {
+                    map("secretRef") {
+                        add("name", secret)
+                    }
+                }
+            }
+        }
+    }
+
 }

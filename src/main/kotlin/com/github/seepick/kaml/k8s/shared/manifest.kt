@@ -13,9 +13,11 @@ interface Manifest<Spec> {
 enum class ManifestKind(val yamlValue: String) {
     Deployment("Deployment"),
     Pod("Pod"),
+    ConfigMap("ConfigMap"),
     Service("Service"),
     Namespace("Namespace"),
     ResourceQuota("ResourceQuota"),
+    Secret("Secret")
     // ReplicaSet
 }
 

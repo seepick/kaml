@@ -1,13 +1,14 @@
 package com.github.seepick.kaml.examples.mySetup
 
 import com.github.seepick.kaml.Image
-import com.github.seepick.kaml.examples.mySetup.KamlConfig.podLabelKey
 import com.github.seepick.kaml.k8s.XK8s
 import com.github.seepick.kaml.k8s.artifacts.deployment.deployment
 import com.github.seepick.kaml.k8s.artifacts.service.ServiceType
 import com.github.seepick.kaml.k8s.artifacts.service.service
+import com.github.seepick.kaml.k8s.shared.Mi
+import com.github.seepick.kaml.k8s.shared.milliCpu
 
-private val dbPodLabel = podLabelKey to "${KamlConfig.groupId}-db"
+private val dbPodLabel = AppConfig.labels.podLabelKey to "${AppConfig.groupId}-db"
 
 data class DbConfig(
     val user: String,
@@ -16,10 +17,11 @@ data class DbConfig(
     val nodePort: Int = 30_432
 )
 
+// FIXME use a StatefulSet instead! to sync IO
 fun XK8s.dbDeployment(groupId: String, dbConfig: DbConfig) = deployment {
     metadata {
         name = "${groupId}-db-deployment"
-        labels += configMap.teamKamlLabel
+        labels += appConfig.labels.teamKamlLabel
     }
     selector {
         matchLabels += dbPodLabel
@@ -29,7 +31,7 @@ fun XK8s.dbDeployment(groupId: String, dbConfig: DbConfig) = deployment {
         metadata {
             name = "${groupId}-db-pod"
             labels += dbPodLabel
-            labels += configMap.teamKamlLabel
+            labels += appConfig.labels.teamKamlLabel
         }
         container {
             name = "${groupId}-db-container"
@@ -38,16 +40,28 @@ fun XK8s.dbDeployment(groupId: String, dbConfig: DbConfig) = deployment {
                 containerPort = dbConfig.port
                 name = "postgres"
             }
-            env += "POSTGRES_USER" to dbConfig.user
-            env += "POSTGRES_PASSWORD" to dbConfig.pass
+            env {
+                values += "POSTGRES_USER" to dbConfig.user
+                values += "POSTGRES_PASSWORD" to dbConfig.pass
+            }
+            resources {
+                requests {
+                    cpu = 100.milliCpu
+                    memory = 256.Mi
+                }
+                limits {
+                    cpu = 500.milliCpu
+                    memory = 512.Mi
+                }
+            }
         }
     }
 }
 
 fun XK8s.dbService(groupId: String, dbConfig: DbConfig) = service {
     metadata {
-        name = configMap.db.serviceName // "${groupId}-db-service"
-        labels += configMap.teamKamlLabel
+        name = appConfig.db.serviceName // "${groupId}-db-service"
+        labels += appConfig.labels.teamKamlLabel
     }
     type = ServiceType.ClusterIP
     selector += dbPodLabel

@@ -56,7 +56,7 @@ fun validation(code: ValidationDsl.() -> Unit): ValidationResult {
     else ValidationResult.Invalid(issues)
 }
 
-fun <D> handleValidation(konfig: Konfig, domain: D, vararg results: ValidationResult): D {
+fun <D> handleValidation(konfig: KamlKonfig, domain: D, vararg results: ValidationResult): D {
     val issues = results.filterIsInstance<ValidationResult.Invalid>().flatMap { it.issues }
     return if (issues.isEmpty()) domain
     else {
