@@ -3,9 +3,9 @@ package com.github.seepick.kaml.k8s.shared
 import com.github.seepick.kaml.Image
 import com.github.seepick.kaml.ImageFormatter
 import com.github.seepick.kaml.KamlDsl
-import com.github.seepick.kaml.Validatable
-import com.github.seepick.kaml.kerror
-import com.github.seepick.kaml.validation
+import com.github.seepick.kaml.validation.Validatable
+import com.github.seepick.kaml.validation.invalid
+import com.github.seepick.kaml.validation.validation
 import com.github.seepick.kaml.yaml.YamlMapDsl
 
 data class Container(
@@ -18,7 +18,7 @@ data class Container(
     val resources: Resources?,
 ) : Validatable {
     override fun validate() = validation {
-        check(name.isNotEmpty(), "Container name must not be empty")
+        valid(name.isNotEmpty()) { "Container name must not be empty" }
     }
 }
 
@@ -74,14 +74,13 @@ class ContainerDsl {
     }
 
     internal fun build() = Container(
-        image = image ?: kerror("container image not set for [$name]"),
+        image = image ?: invalid("Image must be set for container $name"),
         name = name,
         ports = ports,
         env = env,
         resources = resources,
     )
 }
-
 
 fun YamlMapDsl.addContainers(containers: List<Container>) {
     seq("containers") {

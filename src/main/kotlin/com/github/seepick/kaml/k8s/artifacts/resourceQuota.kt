@@ -64,6 +64,7 @@ data class ResourceQuota(
     override val metadata: Metadata,
     override val spec: ResourceQuotaSpec,
 ) : Manifest<ResourceQuotaSpec>, KamlYamlOutput {
+
     override val apiVersion = K8sApiVersion.ResourceQuota
     override val kind = ManifestKind.ResourceQuota
 
@@ -92,6 +93,4 @@ data class HardRQSpec(
     val limitsCpu: String? = null,
     /** e.g. "10Gi" */
     val limitsMemory: String? = null,
-
-
-    )
+)

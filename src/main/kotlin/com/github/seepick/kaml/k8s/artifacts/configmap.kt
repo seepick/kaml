@@ -10,6 +10,9 @@ import com.github.seepick.kaml.k8s.shared.Manifest
 import com.github.seepick.kaml.k8s.shared.ManifestKind
 import com.github.seepick.kaml.k8s.shared.Metadata
 import com.github.seepick.kaml.k8s.shared.MetadataDsl
+import com.github.seepick.kaml.validation.Validatable
+import com.github.seepick.kaml.validation.ValidationResult
+import com.github.seepick.kaml.validation.handleValidation
 import com.github.seepick.kaml.yaml.YamlRoot
 import com.github.seepick.kaml.yaml.skipSpec
 
@@ -31,16 +34,18 @@ class ConfigMapDsl(private val konfig: KamlKonfig) {
         _metadata = MetadataDsl().apply(code).build()
     }
 
-    internal fun build() = ConfigMap(
-        metadata = _metadata,
-        data = data,
+    internal fun build() = handleValidation(
+        konfig, ConfigMap(
+            metadata = _metadata,
+            data = data,
+        )
     )
 }
 
 data class ConfigMap(
     override val metadata: Metadata,
     val data: Map<String, String>,
-) : Manifest<Any?>, KamlYamlOutput {
+) : Manifest<Any?>, KamlYamlOutput, Validatable {
     override val apiVersion = K8sApiVersion.ConfigMap
     override val kind = ManifestKind.ConfigMap
     override val spec: Any? = null
@@ -51,4 +56,6 @@ data class ConfigMap(
                 data.forEach { (key, value) -> add(key, value) }
             }
         })
+
+    override fun validate() = ValidationResult.Valid
 }

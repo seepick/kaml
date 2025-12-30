@@ -1,7 +1,6 @@
 package com.github.seepick.kaml.k8s.artifacts.deployment
 
 import com.github.seepick.kaml.KamlYamlOutput
-import com.github.seepick.kaml.Validatable
 import com.github.seepick.kaml.k8s.shared.Container
 import com.github.seepick.kaml.k8s.shared.K8sApiVersion
 import com.github.seepick.kaml.k8s.shared.Manifest
@@ -9,14 +8,16 @@ import com.github.seepick.kaml.k8s.shared.ManifestKind
 import com.github.seepick.kaml.k8s.shared.Metadata
 import com.github.seepick.kaml.k8s.shared.addContainers
 import com.github.seepick.kaml.k8s.shared.addMetadata
-import com.github.seepick.kaml.validation
+import com.github.seepick.kaml.validation.Validatable
+import com.github.seepick.kaml.validation.ValidationResult
+import com.github.seepick.kaml.validation.validation
 import com.github.seepick.kaml.yaml.YamlRoot
 
 /** See https://kubernetes.io/docs/concepts/workloads/controllers/deployment/ */
 data class Deployment(
     override val metadata: Metadata,
     override val spec: DeploymentSpec,
-) : Manifest<DeploymentSpec>, KamlYamlOutput {
+) : Manifest<DeploymentSpec>, KamlYamlOutput, Validatable {
 
     override val apiVersion = K8sApiVersion.Deployment
 
@@ -36,8 +37,9 @@ data class Deployment(
             }
         }
     }
-}
 
+    override fun validate() = ValidationResult.Valid
+}
 
 data class DeploymentSpec(
     val replicas: Int,
@@ -62,7 +64,6 @@ data class Template(
     }
 
     override fun validate() = validation {
-        check(!containers.isEmpty(), "Template must contain at least one container ($metadata)")
-        containers.forEach { mergeWith(it) }
+        valid(!containers.isEmpty()) { "Template must contain at least one container ($metadata)" }
     }
 }

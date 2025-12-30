@@ -2,10 +2,10 @@ package com.github.seepick.kaml.examples.mySetup
 
 import com.github.seepick.kaml.KamlKonfig
 import com.github.seepick.kaml.KamlYamlOutput
-import com.github.seepick.kaml.ValidationLevel
 import com.github.seepick.kaml.XKaml
 import com.github.seepick.kaml.k8s.k8s
 import com.github.seepick.kaml.kerror
+import com.github.seepick.kaml.validation.ValidationLevel
 import java.io.File
 
 fun main() {

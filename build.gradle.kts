@@ -17,6 +17,7 @@ version = "1.1.0"
 
 dependencies {
     implementation("com.amihaiemil.web:eo-yaml:8.0.6")
+    implementation(kotlin("reflect"))
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.13")
     runtimeOnly("ch.qos.logback:logback-classic:1.5.18")
 

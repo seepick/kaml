@@ -7,6 +7,8 @@ import com.github.seepick.kaml.k8s.shared.Manifest
 import com.github.seepick.kaml.k8s.shared.ManifestKind
 import com.github.seepick.kaml.k8s.shared.Metadata
 import com.github.seepick.kaml.k8s.shared.addContainers
+import com.github.seepick.kaml.validation.Validatable
+import com.github.seepick.kaml.validation.ValidationResult
 import com.github.seepick.kaml.yaml.YamlRoot
 
 /** See https://kubernetes.io/docs/concepts/workloads/pods/ */
@@ -15,13 +17,15 @@ data class Pod(
     override val metadata: Metadata,
     override val spec: PodSpec,
     // status = {}
-) : Manifest<PodSpec>, KamlYamlOutput {
+) : Manifest<PodSpec>, KamlYamlOutput, Validatable {
 
     override val kind: ManifestKind = ManifestKind.Pod
 
     override fun toYamlNode() = YamlRoot.k8sManifest(this) {
         addContainers(spec.containers)
     }
+
+    override fun validate() = ValidationResult.Valid
 }
 
 data class PodSpec(

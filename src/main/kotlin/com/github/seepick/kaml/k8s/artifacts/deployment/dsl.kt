@@ -2,12 +2,12 @@ package com.github.seepick.kaml.k8s.artifacts.deployment
 
 import com.github.seepick.kaml.KamlDsl
 import com.github.seepick.kaml.KamlKonfig
-import com.github.seepick.kaml.handleValidation
 import com.github.seepick.kaml.k8s.K8s
 import com.github.seepick.kaml.k8s.XK8s
 import com.github.seepick.kaml.k8s.artifacts.pod.PodOrTemplateDsl
 import com.github.seepick.kaml.k8s.shared.Metadata
 import com.github.seepick.kaml.k8s.shared.MetadataDsl
+import com.github.seepick.kaml.validation.handleValidation
 
 fun K8s.deployment(konfig: KamlKonfig = KamlKonfig.default, code: DeploymentDsl.() -> Unit): Deployment =
     DeploymentDsl(konfig).apply(code).build()
@@ -41,8 +41,8 @@ class DeploymentDsl(private val konfig: KamlKonfig) {
         template = TemplateDsl().apply(code).build()
     }
 
-    internal fun build(): Deployment { // : Either<NonEmptyList<ValidationIssue>, Deployment> = either {
-        val deployment = Deployment(
+    internal fun build() = handleValidation(
+        konfig, Deployment(
             metadata = metadata,
             spec = DeploymentSpec(
                 replicas = replicas,
@@ -50,11 +50,7 @@ class DeploymentDsl(private val konfig: KamlKonfig) {
                 template = template,
             ),
         )
-        return handleValidation(
-            konfig, deployment,
-            deployment.spec.template.validate(),
-        )
-    }
+    )
 }
 
 @KamlDsl

@@ -12,7 +12,9 @@ maintained anymore) to add YAML support to kotlinx.serialization.
 Benefits
 ------------------------------------------------------------------------------------------------------------------------
 
-* *Typesafe DSL* using statically typed language features and compiler checks (domain types)
+* *Typesafe DSL* using statically typed language features and compiler checks
+    * Use of domain types; a port is not a CPU, yet both are declared as numbers and should not be mixed up
+    * An enum should be auto-suggested and validated upon writing (not only during k8s interaction)
 * Sections wrapped by good old `{}`; no more *misplaced indentation* and hours of painstaking debugging
 * _*Auto-completable*_: lowering entrance barrier for new learning (not having to remember all options)
 * From run-time (deploy and wait) to write-time (instant compiler) feedback (instead having to wait to apply the changes
