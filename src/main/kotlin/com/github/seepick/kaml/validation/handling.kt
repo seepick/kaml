@@ -10,17 +10,20 @@ import kotlin.reflect.full.isSubtypeOf
 
 private val log = KotlinLogging.logger {}
 
-fun <D : Validatable> handleValidation(konfig: KamlKonfig, domain: D): D {
-    val results = scanValidatables(domain)
+fun <D : Validatable> DomainBuilder<D>.buildValidated(konfig: KamlKonfig): D =
+    build().validated(konfig)
+
+fun <V : Validatable> V.validated(konfig: KamlKonfig): V {
+    val results = scanValidatables(this)
     val issues = results.filterIsInstance<ValidationResult.Invalid>().flatMap { it.issues }
-    return if (issues.isEmpty()) domain
+    return if (issues.isEmpty()) this
     else {
         when (konfig.validationLevel) {
-            ValidationLevel.Disabled -> domain
+            ValidationLevel.Disabled -> this
 
             ValidationLevel.LogWarningsOnly -> {
                 log.warn { "Validation failed!\n" + issues.formatted }
-                domain
+                this
             }
 
             ValidationLevel.FailOnError -> throw KamlValidationException(
@@ -31,32 +34,29 @@ fun <D : Validatable> handleValidation(konfig: KamlKonfig, domain: D): D {
     }
 }
 
-
-private fun scanValidatables(root: Any): List<ValidationResult> {
+private fun scanValidatables(root: Any): List<ValidationResult> = buildList {
 //    println("checking root ... $root")
-    return buildList {
-        if (root is Validatable) {
+    if (root is Validatable) {
 //            println("  is validatable!")
-            add(root.validate())
-        }
-        root::class.declaredMemberProperties
-            .forEach { prop ->
-//                println("  [${prop.name}] -> [${prop.returnType}]")
-                val x = prop.returnType.classifier as KClass<*>
-                if (prop.returnType.isMarkedNullable && prop.call(root) == null) {
-//                    println("  skip null")
-                } else if (x.qualifiedName!!.startsWith("com.github.seepick.kaml")) {
-//                    println("    recursive call for: ${prop.name}")
-                    addAll(scanValidatables(prop.call(root)!!))
-                } else if (prop.returnType.isSubtypeOf(
-                        List::class.createType(
-                            arguments = listOf(KTypeProjection.invariant(Any::class.createType()))
-                        )
-                    )
-                ) {
-                    addAll((prop.call(root) as List<*>).flatMap { scanValidatables(it!!) })
-                }
-                // TODO handle map
-            }
+        add(root.validate())
     }
+    root::class.declaredMemberProperties
+        .forEach { prop ->
+//                println("  [${prop.name}] -> [${prop.returnType}]")
+            val x = prop.returnType.classifier as KClass<*>
+            if (prop.returnType.isMarkedNullable && prop.call(root) == null) {
+//                    println("  skip null")
+            } else if (x.qualifiedName!!.startsWith("com.github.seepick.kaml")) {
+//                    println("    recursive call for: ${prop.name}")
+                addAll(scanValidatables(prop.call(root)!!))
+            } else if (prop.returnType.isSubtypeOf(
+                    List::class.createType(
+                        arguments = listOf(KTypeProjection.invariant(Any::class.createType()))
+                    )
+                )
+            ) {
+                addAll((prop.call(root) as List<*>).flatMap { scanValidatables(it!!) })
+            }
+            // TODO handle map
+        }
 }

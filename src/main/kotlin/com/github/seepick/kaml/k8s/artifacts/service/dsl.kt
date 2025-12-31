@@ -8,18 +8,19 @@ import com.github.seepick.kaml.k8s.shared.Metadata
 import com.github.seepick.kaml.k8s.shared.MetadataDsl
 import com.github.seepick.kaml.k8s.shared.ServicePort
 import com.github.seepick.kaml.k8s.shared.ServicePortDsl
-import com.github.seepick.kaml.validation.handleValidation
+import com.github.seepick.kaml.validation.DomainBuilder
+import com.github.seepick.kaml.validation.buildValidated
 import java.lang.constant.ConstantDescs.DEFAULT_NAME
 
 fun K8s.service(konfig: KamlKonfig = KamlKonfig.default, code: ServiceDsl.() -> Unit) =
-    ServiceDsl(konfig).apply(code).build()
+    ServiceDsl().apply(code).buildValidated(konfig)
 
 fun XK8s.service(code: ServiceDsl.() -> Unit) =
     K8s.service(konfig, code)
 
 
 @KamlDsl
-class ServiceDsl(private val konfig: KamlKonfig) {
+class ServiceDsl : DomainBuilder<Service> {
 
     private var metadata = Metadata.default.copy(name = DEFAULT_NAME)
     fun metadata(code: MetadataDsl.() -> Unit) {
@@ -36,14 +37,12 @@ class ServiceDsl(private val konfig: KamlKonfig) {
     /** Labels defined in the pod's (deployment template's) metadata. */
     val selector = mutableMapOf<String, String>()
 
-    fun build() = handleValidation(
-        konfig, Service(
-            metadata = metadata,
-            spec = ServiceSpec(
-                type = type,
-                ports = ports,
-                selector = selector,
-            )
+    override fun build() = Service(
+        metadata = metadata,
+        spec = ServiceSpec(
+            type = type,
+            ports = ports,
+            selector = selector,
         )
     )
 }

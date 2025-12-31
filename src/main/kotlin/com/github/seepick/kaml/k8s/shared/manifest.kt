@@ -2,7 +2,6 @@ package com.github.seepick.kaml.k8s.shared
 
 import com.github.seepick.kaml.yaml.YamlMapDsl
 
-
 interface Manifest<Spec> {
     val apiVersion: ApiVersion
     val kind: ManifestKind

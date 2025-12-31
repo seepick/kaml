@@ -2,6 +2,10 @@ package com.github.seepick.kaml.validation
 
 import com.github.seepick.kaml.KamlException
 
+interface DomainBuilder<D : Validatable> {
+    fun build(): D
+}
+
 enum class ValidationLevel {
     Disabled,
     LogWarningsOnly,

@@ -10,20 +10,21 @@ import com.github.seepick.kaml.k8s.shared.Manifest
 import com.github.seepick.kaml.k8s.shared.ManifestKind
 import com.github.seepick.kaml.k8s.shared.Metadata
 import com.github.seepick.kaml.k8s.shared.MetadataDsl
+import com.github.seepick.kaml.validation.DomainBuilder
 import com.github.seepick.kaml.validation.Validatable
-import com.github.seepick.kaml.validation.handleValidation
+import com.github.seepick.kaml.validation.buildValidated
 import com.github.seepick.kaml.validation.validation
 import com.github.seepick.kaml.yaml.YamlRoot
 
 fun K8s.namespace(konfig: KamlKonfig = KamlKonfig.default, code: NamespaceDsl.() -> Unit): Namespace =
-    NamespaceDsl(konfig).apply(code).build()
+    NamespaceDsl().apply(code).buildValidated(konfig)
 
 fun XK8s.namespace(code: NamespaceDsl.() -> Unit): Namespace =
     K8s.namespace(konfig, code)
 
 
 @KamlDsl
-class NamespaceDsl(private val konfig: KamlKonfig) {
+class NamespaceDsl : DomainBuilder<Namespace> {
 
     protected var _metadata: Metadata = Metadata.Companion.default
         private set
@@ -32,7 +33,7 @@ class NamespaceDsl(private val konfig: KamlKonfig) {
         _metadata = MetadataDsl().apply(code).build()
     }
 
-    internal fun build() = handleValidation(konfig, Namespace(_metadata))
+    override fun build() = Namespace(_metadata)
 }
 
 data class Namespace(

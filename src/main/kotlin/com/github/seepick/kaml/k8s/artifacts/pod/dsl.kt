@@ -9,7 +9,9 @@ import com.github.seepick.kaml.k8s.shared.ContainerDsl
 import com.github.seepick.kaml.k8s.shared.K8sApiVersion
 import com.github.seepick.kaml.k8s.shared.Metadata
 import com.github.seepick.kaml.k8s.shared.MetadataDsl
-import com.github.seepick.kaml.validation.handleValidation
+import com.github.seepick.kaml.validation.DomainBuilder
+import com.github.seepick.kaml.validation.Validatable
+import com.github.seepick.kaml.validation.buildValidated
 
 /**
  * The **smallest workable unit** in k8s; basically an abstraction over a container (=a running image).
@@ -17,12 +19,12 @@ import com.github.seepick.kaml.validation.handleValidation
  * More info: [https://kubernetes.io/docs/concepts/workloads/pods/](https://kubernetes.io/docs/concepts/workloads/pods/)
  */
 fun K8s.pod(konfig: KamlKonfig = KamlKonfig.default, code: PodDsl.() -> Unit) =
-    PodDsl(konfig).apply(code).build()
+    PodDsl().apply(code).buildValidated(konfig)
 
 fun XK8s.pod(code: PodDsl.() -> Unit) =
     K8s.pod(konfig, code)
 
-abstract class PodOrTemplateDsl<POT>() {
+abstract class PodOrTemplateDsl<POT : Validatable>() : DomainBuilder<POT> {
 
     protected var _metadata: Metadata = Metadata.default
         private set
@@ -42,20 +44,30 @@ abstract class PodOrTemplateDsl<POT>() {
         containers += ContainerDsl().apply(code).build()
     }
 
-    internal abstract fun build(): POT
+    var restartPolicy: RestartPolicy? = null
+
+}
+
+enum class RestartPolicy(val yamlValue: String) {
+    Always("Always"),
+    Never("Never"),
+    OnFailure("OnFailure");
+
+    companion object {
+        val default = Always
+    }
 }
 
 @KamlDsl
-class PodDsl(private val konfig: KamlKonfig) : PodOrTemplateDsl<Pod>() {
+class PodDsl : PodOrTemplateDsl<Pod>(), DomainBuilder<Pod> {
 
     /** Read-only. Defaults to "v1". */
     val apiVersion = K8sApiVersion.Pod
 
-    internal override fun build() = handleValidation(
-        konfig, Pod(
-            apiVersion = apiVersion,
-            metadata = _metadata,
-            spec = PodSpec(containers = containers),
-        )
+    override fun build() = Pod(
+        apiVersion = apiVersion,
+        metadata = _metadata,
+        spec = PodSpec(containers = containers, restartPolicy = restartPolicy),
     )
 }
+

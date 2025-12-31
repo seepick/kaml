@@ -38,6 +38,12 @@ fun XK8s.backendDeployment(configMapRef: String, backendPort: Int) = deployment 
                 configMaps += configMapRef
                 values += "PORT" to "\"\"$backendPort\"\"" // FIXME quote fix?! otherwise "cannot convert int64 to string"
             }
+            readinessProbe {
+                httpGet(path = "/ready", port = backendPort)
+            }
+            livnessProbe {
+                httpGet(path = "/healthy", port = backendPort)
+            }
             resources {
                 requests {
                     cpu = 100.milliCpu
@@ -50,8 +56,6 @@ fun XK8s.backendDeployment(configMapRef: String, backendPort: Int) = deployment 
             }
         }
     }
-    // TODO ready/health probes
-
     // $ k exec -it kaml-backend-deployment-7849768597-5r8wq -- /bin/bash
     // $ curl localhost:8080
 }

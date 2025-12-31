@@ -7,16 +7,17 @@ import com.github.seepick.kaml.k8s.XK8s
 import com.github.seepick.kaml.k8s.artifacts.pod.PodOrTemplateDsl
 import com.github.seepick.kaml.k8s.shared.Metadata
 import com.github.seepick.kaml.k8s.shared.MetadataDsl
-import com.github.seepick.kaml.validation.handleValidation
+import com.github.seepick.kaml.validation.DomainBuilder
+import com.github.seepick.kaml.validation.buildValidated
 
 fun K8s.deployment(konfig: KamlKonfig = KamlKonfig.default, code: DeploymentDsl.() -> Unit): Deployment =
-    DeploymentDsl(konfig).apply(code).build()
+    DeploymentDsl().apply(code).buildValidated(konfig)
 
 fun XK8s.deployment(code: DeploymentDsl.() -> Unit): Deployment =
     K8s.deployment(konfig, code)
 
 @KamlDsl
-class DeploymentDsl(private val konfig: KamlKonfig) {
+class DeploymentDsl : DomainBuilder<Deployment> {
 
     companion object {
         private const val DEFAULT_NAME = "default-deployment-name"
@@ -41,15 +42,13 @@ class DeploymentDsl(private val konfig: KamlKonfig) {
         template = TemplateDsl().apply(code).build()
     }
 
-    internal fun build() = handleValidation(
-        konfig, Deployment(
-            metadata = metadata,
-            spec = DeploymentSpec(
-                replicas = replicas,
-                selector = selector,
-                template = template,
-            ),
-        )
+    override fun build() = Deployment(
+        metadata = metadata,
+        spec = DeploymentSpec(
+            replicas = replicas,
+            selector = selector,
+            template = template,
+        ),
     )
 }
 
@@ -66,5 +65,6 @@ class TemplateDsl : PodOrTemplateDsl<Template>() {
     override fun build() = Template(
         metadata = _metadata,
         containers = containers,
+        restartPolicy = restartPolicy,
     )
 }

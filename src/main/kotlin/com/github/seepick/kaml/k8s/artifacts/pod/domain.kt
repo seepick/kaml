@@ -22,6 +22,9 @@ data class Pod(
     override val kind: ManifestKind = ManifestKind.Pod
 
     override fun toYamlNode() = YamlRoot.k8sManifest(this) {
+        if (spec.restartPolicy != null) {
+            add("restartPolicy", spec.restartPolicy.yamlValue)
+        }
         addContainers(spec.containers)
     }
 
@@ -31,5 +34,5 @@ data class Pod(
 data class PodSpec(
     val containers: List<Container>,
     // dnsPolicy = ClusterFirst, ...
-    // restartPolicy = Always, ...
+    val restartPolicy: RestartPolicy?,
 )

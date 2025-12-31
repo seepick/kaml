@@ -3,6 +3,7 @@ package com.github.seepick.kaml.k8s.artifacts
 import com.github.seepick.kaml.Image
 import com.github.seepick.kaml.Kaml
 import com.github.seepick.kaml.k8s.any
+import com.github.seepick.kaml.k8s.artifacts.pod.RestartPolicy
 import com.github.seepick.kaml.k8s.artifacts.pod.pod
 import com.github.seepick.kaml.k8s.k8s
 import com.github.seepick.kaml.k8s.shared.Gi
@@ -38,12 +39,19 @@ class PodTest : DescribeSpec({
                     namespace = "dev"
                     labels += "myLabel" to "myLabelValue"
                 }
+                restartPolicy = RestartPolicy.Never
                 container {
                     name = "my-containername"
                     image = Image.Companion(name = "my-imagename", version = "my-imageVersion")
                     ports {
                         containerPort = 80
                         name = "my-portname"
+                    }
+                    readinessProbe {
+                        httpGet(path = "/ready", port = 81)
+                    }
+                    livnessProbe {
+                        httpGet(path = "/healthy", port = 82)
                     }
                     env {
                         values += "envKey" to "envVal"
@@ -68,12 +76,21 @@ class PodTest : DescribeSpec({
                   labels:
                     myLabel: myLabelValue
                 spec:
+                  restartPolicy: Never
                   containers:
                     - name: my-containername
                       image: my-imagename:my-imageVersion
                       ports:
                         - name: my-portname
                           containerPort: 80
+                      readinessProbe:
+                        httpGet:
+                          path: /ready
+                          port: 81
+                      livenessProbe:
+                        httpGet:
+                          path: /healthy
+                          port: 82
                       env:
                         - name: envKey
                           value: envVal

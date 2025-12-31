@@ -1,6 +1,8 @@
 package com.github.seepick.kaml.k8s.shared
 
 import com.github.seepick.kaml.KamlDsl
+import com.github.seepick.kaml.validation.Validatable
+import com.github.seepick.kaml.validation.validation
 import com.github.seepick.kaml.yaml.YamlMapDsl
 
 data class Resources(
@@ -15,9 +17,9 @@ data class Resources(
 data class ResourceSpec(
     val cpu: Cpu?,
     val memory: Memory?,
-) {
-    init {
-        require(cpu != null || memory != null) { "At least one resource must be specified" }
+) : Validatable {
+    override fun validate() = validation {
+        valid(cpu != null || memory != null) { "At least one resource must be specified" }
     }
 }
 

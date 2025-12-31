@@ -1,6 +1,7 @@
 package com.github.seepick.kaml.k8s.artifacts.deployment
 
 import com.github.seepick.kaml.KamlYamlOutput
+import com.github.seepick.kaml.k8s.artifacts.pod.RestartPolicy
 import com.github.seepick.kaml.k8s.shared.Container
 import com.github.seepick.kaml.k8s.shared.K8sApiVersion
 import com.github.seepick.kaml.k8s.shared.Manifest
@@ -45,6 +46,8 @@ data class DeploymentSpec(
     val replicas: Int,
     val selector: Selector,
     val template: Template,
+    // strategy: Recreate | RollingUpdate
+    // if RollingUpdate: rollingUpdate info expected (otherwise fail); maxSurge, maxUnavailable (as Int and percentage)
 )
 
 data class Selector(
@@ -58,9 +61,10 @@ data class Selector(
 data class Template(
     val metadata: Metadata,
     val containers: List<Container>,
+    val restartPolicy: RestartPolicy?,
 ) : Validatable {
     companion object {
-        val default = Template(Metadata.default, containers = emptyList())
+        val default = Template(Metadata.default, containers = emptyList(), restartPolicy = null)
     }
 
     override fun validate() = validation {

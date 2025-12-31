@@ -10,20 +10,21 @@ import com.github.seepick.kaml.k8s.shared.Manifest
 import com.github.seepick.kaml.k8s.shared.ManifestKind
 import com.github.seepick.kaml.k8s.shared.Metadata
 import com.github.seepick.kaml.k8s.shared.MetadataDsl
+import com.github.seepick.kaml.validation.DomainBuilder
 import com.github.seepick.kaml.validation.Validatable
 import com.github.seepick.kaml.validation.ValidationResult
-import com.github.seepick.kaml.validation.handleValidation
+import com.github.seepick.kaml.validation.buildValidated
 import com.github.seepick.kaml.yaml.YamlRoot
 import com.github.seepick.kaml.yaml.skipSpec
 
 fun K8s.configMap(konfig: KamlKonfig = KamlKonfig.default, code: ConfigMapDsl.() -> Unit) =
-    ConfigMapDsl(konfig).apply(code).build()
+    ConfigMapDsl().apply(code).buildValidated(konfig)
 
 fun XK8s.configMap(code: ConfigMapDsl.() -> Unit) =
     K8s.configMap(konfig, code)
 
 @KamlDsl
-class ConfigMapDsl(private val konfig: KamlKonfig) {
+class ConfigMapDsl : DomainBuilder<ConfigMap> {
 
     protected var _metadata: Metadata = Metadata.Companion.default
         private set
@@ -34,11 +35,9 @@ class ConfigMapDsl(private val konfig: KamlKonfig) {
         _metadata = MetadataDsl().apply(code).build()
     }
 
-    internal fun build() = handleValidation(
-        konfig, ConfigMap(
-            metadata = _metadata,
-            data = data,
-        )
+    override fun build() = ConfigMap(
+        metadata = _metadata,
+        data = data,
     )
 }
 

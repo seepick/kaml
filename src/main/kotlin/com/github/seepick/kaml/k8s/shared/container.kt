@@ -16,6 +16,8 @@ data class Container(
     val ports: List<ContainerPort>,
     val env: Env,
     val resources: Resources?,
+    val readinessProbe: Probe?,
+    val livnessProbe: Probe?,
 ) : Validatable {
     override fun validate() = validation {
         valid(name.isNotEmpty()) { "Container name must not be empty" }
@@ -50,6 +52,36 @@ data class Env(
     val hasAny = values.isNotEmpty() || configMapRefNames.isNotEmpty() || secretRefNames.isNotEmpty()
 }
 
+data class Probe(
+    val path: String,
+    val port: Int,
+) : Validatable {
+    override fun validate() = validation {
+        valid(port > 0) { "Port must be positive" }
+    }
+}
+
+class ProbeDsl {
+    private var path = "/health"
+    private var port = 8080
+
+    fun httpGet(path: String, port: Int) {
+        // httpHeaders (name/value)
+        this.path = path
+        this.port = port
+    }
+    // TODO more probes
+    // fun tcpSocket(port: Int)
+    // fun exec(command: List<String>)
+
+    // var initialDelaySeconds: Int = 10
+    // how often to check
+    // var periodSeconds: Int = 10
+    // var failureThreshold: Int = 3
+
+    internal fun build() = Probe(path, port)
+}
+
 @KamlDsl
 class ContainerDsl {
     /** Visible label for the container. */
@@ -68,6 +100,17 @@ class ContainerDsl {
         env = EnvDsl().apply(code).build()
     }
 
+    private var readinessProbe: Probe? = null
+    fun readinessProbe(code: ProbeDsl.() -> Unit) {
+        readinessProbe = ProbeDsl().apply(code).build()
+    }
+
+    private var livnessProbe: Probe? = null
+    fun livnessProbe(code: ProbeDsl.() -> Unit) {
+        livnessProbe = ProbeDsl().apply(code).build()
+    }
+
+
     private var resources: Resources? = null
     fun resources(code: ResourcesDsl.() -> Unit) {
         resources = ResourcesDsl().apply(code).build()
@@ -79,6 +122,8 @@ class ContainerDsl {
         ports = ports,
         env = env,
         resources = resources,
+        readinessProbe = readinessProbe,
+        livnessProbe = livnessProbe,
     )
 }
 
@@ -89,9 +134,22 @@ fun YamlMapDsl.addContainers(containers: List<Container>) {
                 add("name", container.name)
                 add("image", container.image.format(ImageFormatter.Docker))
                 addContainerPorts(container.ports)
+                addProbeIfNotNull("readinessProbe", container.readinessProbe)
+                addProbeIfNotNull("livenessProbe", container.livnessProbe)
                 addEnv(container.env)
                 addResources(container.resources)
             }
+        }
+    }
+}
+
+
+fun YamlMapDsl.addProbeIfNotNull(key: String, probe: Probe?) {
+    if (probe == null) return
+    map(key) {
+        map("httpGet") {
+            add("path", probe.path)
+            add("port", probe.port)
         }
     }
 }
