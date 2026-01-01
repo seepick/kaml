@@ -6,9 +6,13 @@ import com.github.seepick.kaml.k8s.K8s
 import com.github.seepick.kaml.k8s.XK8s
 import com.github.seepick.kaml.k8s.shared.Container
 import com.github.seepick.kaml.k8s.shared.ContainerDsl
+import com.github.seepick.kaml.k8s.shared.HostPath
+import com.github.seepick.kaml.k8s.shared.HostPathDsl
 import com.github.seepick.kaml.k8s.shared.K8sApiVersion
 import com.github.seepick.kaml.k8s.shared.Metadata
 import com.github.seepick.kaml.k8s.shared.MetadataDsl
+import com.github.seepick.kaml.k8s.shared.Volume
+import com.github.seepick.kaml.k8s.shared.VolumeDsl
 import com.github.seepick.kaml.validation.DomainBuilder
 import com.github.seepick.kaml.validation.Validatable
 import com.github.seepick.kaml.validation.buildValidated
@@ -23,6 +27,7 @@ fun K8s.pod(konfig: KamlKonfig = KamlKonfig.default, code: PodDsl.() -> Unit) =
 
 fun XK8s.pod(code: PodDsl.() -> Unit) =
     K8s.pod(konfig, code)
+
 
 abstract class PodOrTemplateDsl<POT : Validatable>() : DomainBuilder<POT> {
 
@@ -44,30 +49,36 @@ abstract class PodOrTemplateDsl<POT : Validatable>() : DomainBuilder<POT> {
         containers += ContainerDsl().apply(code).build()
     }
 
+    protected val volumes = mutableListOf<Volume>()
+    fun volume(code: VolumeDsl.() -> Unit) {
+        volumes += VolumeDsl().apply(code).build()
+    }
+
+    protected var hostPath: HostPath? = null
+    /** Use it only in a single node cluster! */
+    fun hostPath(code: HostPathDsl.() -> Unit) {
+        hostPath = HostPathDsl().apply(code).build()
+    }
+
     var restartPolicy: RestartPolicy? = null
 
-}
-
-enum class RestartPolicy(val yamlValue: String) {
-    Always("Always"),
-    Never("Never"),
-    OnFailure("OnFailure");
-
-    companion object {
-        val default = Always
-    }
+    protected fun buildPodSpec() = PodSpec(
+        containers = containers,
+        restartPolicy = restartPolicy,
+        volumes = volumes,
+        hostPath = hostPath,
+    )
 }
 
 @KamlDsl
 class PodDsl : PodOrTemplateDsl<Pod>(), DomainBuilder<Pod> {
 
     /** Read-only. Defaults to "v1". */
-    val apiVersion = K8sApiVersion.Pod
+    val apiVersion = K8sApiVersion.v1
 
     override fun build() = Pod(
         apiVersion = apiVersion,
         metadata = _metadata,
-        spec = PodSpec(containers = containers, restartPolicy = restartPolicy),
+        spec = buildPodSpec(),
     )
 }
-

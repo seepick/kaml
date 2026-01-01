@@ -65,8 +65,8 @@ data class ResourceQuota(
     override val spec: ResourceQuotaSpec,
 ) : Manifest<ResourceQuotaSpec>, KamlYamlOutput {
 
-    override val apiVersion = K8sApiVersion.ResourceQuota
-    override val kind = ManifestKind.ResourceQuota
+    override val apiVersion = K8sApiVersion.v1
+    override val kind = ManifestKind("ResourceQuota")
 
     override fun toYamlNode() = YamlRoot.k8sManifest(this, skipSpec = true) {
         map("hard") {

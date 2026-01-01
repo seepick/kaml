@@ -44,8 +44,8 @@ data class Secret(
     override val metadata: Metadata,
     val data: Map<String, String>,
 ) : Manifest<Any?>, KamlYamlOutput {
-    override val apiVersion = K8sApiVersion.Secret
-    override val kind = ManifestKind.Secret
+    override val apiVersion = K8sApiVersion.v1
+    override val kind = ManifestKind("Secret")
     override val spec: Any? = null
 
     override fun toYamlNode() =

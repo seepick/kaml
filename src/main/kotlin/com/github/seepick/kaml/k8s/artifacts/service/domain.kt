@@ -6,18 +6,16 @@ import com.github.seepick.kaml.k8s.shared.Manifest
 import com.github.seepick.kaml.k8s.shared.ManifestKind
 import com.github.seepick.kaml.k8s.shared.Metadata
 import com.github.seepick.kaml.k8s.shared.ServicePort
-import com.github.seepick.kaml.k8s.shared.addServicePorts
 import com.github.seepick.kaml.validation.Validatable
 import com.github.seepick.kaml.validation.validation
-import com.github.seepick.kaml.yaml.YamlRoot
 
 /** See: https://kubernetes.io/docs/concepts/services-networking/service/ */
 data class Service(
     override val metadata: Metadata,
     override val spec: ServiceSpec,
 ) : Manifest<ServiceSpec>, KamlYamlOutput, Validatable {
-    override val apiVersion = K8sApiVersion.Service
-    override val kind = ManifestKind.Service
+    override val apiVersion = K8sApiVersion.v1
+    override val kind = ManifestKind("Service")
 
     override fun validate() = validation {
         if (spec.type == ServiceType.ClusterIP) {
@@ -28,13 +26,7 @@ data class Service(
         }
     }
 
-    override fun toYamlNode() = YamlRoot.k8sManifest(this) {
-        add("type", spec.type.yamlValue)
-        addServicePorts(spec.ports)
-        map("selector") {
-            addAll(spec.selector)
-        }
-    }
+    override fun toYamlNode() = _toYamlNode()
 }
 
 data class ServiceSpec(

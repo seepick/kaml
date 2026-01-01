@@ -42,6 +42,10 @@ class YamlSeqDsl {
         items += value
     }
 
+    fun addAll(values: List<String>) {
+        items.addAll(values)
+    }
+
     fun flatMap(code: YamlMapDsl.() -> Unit) {
         add(YamlMapDsl().apply(code).build())
     }

@@ -12,12 +12,15 @@ data class Container(
     val image: Image,
     /** Mandatory by k8s */
     val name: String,
+    val command: List<String>,
+    val arguments: List<String>,
     // resources = {}
     val ports: List<ContainerPort>,
     val env: Env,
     val resources: Resources?,
     val readinessProbe: Probe?,
     val livnessProbe: Probe?,
+    val volumeMounts: List<VolumeMount>,
 ) : Validatable {
     override fun validate() = validation {
         valid(name.isNotEmpty()) { "Container name must not be empty" }
@@ -88,14 +91,15 @@ class ContainerDsl {
     var name: String = ""
     /** Container image, provided by a registry. */
     var image: Image? = null
-
-    private var env = Env.default
+    val command = mutableListOf<String>()
+    val arguments = mutableListOf<String>()
 
     private val ports = mutableListOf<ContainerPort>()
     fun ports(code: ContainerPortDsl.() -> Unit) {
         ports += ContainerPortDsl().apply(code).build()
     }
 
+    private var env = Env.default
     fun env(code: EnvDsl.() -> Unit) {
         env = EnvDsl().apply(code).build()
     }
@@ -110,22 +114,45 @@ class ContainerDsl {
         livnessProbe = ProbeDsl().apply(code).build()
     }
 
-
     private var resources: Resources? = null
     fun resources(code: ResourcesDsl.() -> Unit) {
         resources = ResourcesDsl().apply(code).build()
     }
 
+    private val volumeMounts = mutableListOf<VolumeMount>()
+    fun volumeMount(code: VolumeMountDsl.() -> Unit) {
+        volumeMounts += VolumeMountDsl().apply(code).build()
+    }
+
     internal fun build() = Container(
         image = image ?: invalid("Image must be set for container $name"),
         name = name,
+        command = command,
+        arguments = arguments,
         ports = ports,
         env = env,
         resources = resources,
         readinessProbe = readinessProbe,
         livnessProbe = livnessProbe,
+        volumeMounts = volumeMounts,
     )
 }
+
+@KamlDsl
+class VolumeMountDsl {
+    var name: String? = null
+    var mountPath: String? = null
+
+    fun build() = VolumeMount(
+        name = name ?: invalid("Volume mount name must be set"),
+        mountPath = mountPath ?: invalid("Mount path must be set"),
+    )
+}
+
+data class VolumeMount(
+    val name: String,
+    val mountPath: String,
+)
 
 fun YamlMapDsl.addContainers(containers: List<Container>) {
     seq("containers") {
@@ -133,13 +160,32 @@ fun YamlMapDsl.addContainers(containers: List<Container>) {
             flatMap {
                 add("name", container.name)
                 add("image", container.image.format(ImageFormatter.Docker))
+                addQuotedIfNotEmpty("command", container.command)
+                addQuotedIfNotEmpty("args", container.arguments)
                 addContainerPorts(container.ports)
                 addProbeIfNotNull("readinessProbe", container.readinessProbe)
                 addProbeIfNotNull("livenessProbe", container.livnessProbe)
                 addEnv(container.env)
                 addResources(container.resources)
+                if (container.volumeMounts.isNotEmpty()) {
+                    seq("volumeMounts") {
+                        container.volumeMounts.forEach { mount ->
+                            flatMap {
+                                add("name", mount.name)
+                                add("mountPath", mount.mountPath)
+                            }
+                        }
+                    }
+                }
             }
         }
+    }
+}
+
+fun YamlMapDsl.addQuotedIfNotEmpty(key: String, values: List<String>) {
+    if (values.isEmpty()) return
+    seq(key) {
+        addAll(values.map { "\"\"$it\"\"" })
     }
 }
 

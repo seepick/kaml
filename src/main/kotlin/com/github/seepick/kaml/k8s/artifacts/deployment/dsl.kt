@@ -7,6 +7,9 @@ import com.github.seepick.kaml.k8s.XK8s
 import com.github.seepick.kaml.k8s.artifacts.pod.PodOrTemplateDsl
 import com.github.seepick.kaml.k8s.shared.Metadata
 import com.github.seepick.kaml.k8s.shared.MetadataDsl
+import com.github.seepick.kaml.k8s.shared.Selector
+import com.github.seepick.kaml.k8s.shared.SelectorDsl
+import com.github.seepick.kaml.kerror
 import com.github.seepick.kaml.validation.DomainBuilder
 import com.github.seepick.kaml.validation.buildValidated
 
@@ -36,7 +39,7 @@ class DeploymentDsl : DomainBuilder<Deployment> {
         metadata = MetadataDsl().also { it.name = DEFAULT_NAME }.apply(code).build()
     }
 
-    private var template = Template.default
+    private var template: Template? = null
     /** How a pod should look like when being created. */
     fun template(code: TemplateDsl.() -> Unit) {
         template = TemplateDsl().apply(code).build()
@@ -47,16 +50,8 @@ class DeploymentDsl : DomainBuilder<Deployment> {
         spec = DeploymentSpec(
             replicas = replicas,
             selector = selector,
-            template = template,
+            template = template ?: kerror("Template not set for deployment $metadata"),
         ),
-    )
-}
-
-@KamlDsl
-class SelectorDsl {
-    val matchLabels = mutableMapOf<String, String>()
-    fun build() = Selector(
-        matchLabels = matchLabels
     )
 }
 
@@ -64,7 +59,6 @@ class SelectorDsl {
 class TemplateDsl : PodOrTemplateDsl<Template>() {
     override fun build() = Template(
         metadata = _metadata,
-        containers = containers,
-        restartPolicy = restartPolicy,
+        spec = buildPodSpec(),
     )
 }

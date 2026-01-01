@@ -1,13 +1,13 @@
 package com.github.seepick.kaml.k8s.artifacts.deployment
 
 import com.github.seepick.kaml.KamlYamlOutput
-import com.github.seepick.kaml.k8s.artifacts.pod.RestartPolicy
-import com.github.seepick.kaml.k8s.shared.Container
+import com.github.seepick.kaml.k8s.artifacts.pod.PodSpec
+import com.github.seepick.kaml.k8s.artifacts.pod.addPodSpec
 import com.github.seepick.kaml.k8s.shared.K8sApiVersion
 import com.github.seepick.kaml.k8s.shared.Manifest
 import com.github.seepick.kaml.k8s.shared.ManifestKind
 import com.github.seepick.kaml.k8s.shared.Metadata
-import com.github.seepick.kaml.k8s.shared.addContainers
+import com.github.seepick.kaml.k8s.shared.Selector
 import com.github.seepick.kaml.k8s.shared.addMetadata
 import com.github.seepick.kaml.validation.Validatable
 import com.github.seepick.kaml.validation.ValidationResult
@@ -20,9 +20,9 @@ data class Deployment(
     override val spec: DeploymentSpec,
 ) : Manifest<DeploymentSpec>, KamlYamlOutput, Validatable {
 
-    override val apiVersion = K8sApiVersion.Deployment
+    override val apiVersion = K8sApiVersion.v1
 
-    override val kind: ManifestKind = ManifestKind.Deployment
+    override val kind: ManifestKind = ManifestKind("Deployment")
 
     override fun toYamlNode() = YamlRoot.k8sManifest(this) {
         add("replicas", spec.replicas)
@@ -34,7 +34,7 @@ data class Deployment(
         map("template") {
             addMetadata(spec.template.metadata)
             map("spec") {
-                addContainers(spec.template.containers)
+                addPodSpec(spec.template.spec)
             }
         }
     }
@@ -50,24 +50,10 @@ data class DeploymentSpec(
     // if RollingUpdate: rollingUpdate info expected (otherwise fail); maxSurge, maxUnavailable (as Int and percentage)
 )
 
-data class Selector(
-    val matchLabels: Map<String, String>,
-) {
-    companion object {
-        val default = Selector(emptyMap())
-    }
-}
-
 data class Template(
     val metadata: Metadata,
-    val containers: List<Container>,
-    val restartPolicy: RestartPolicy?,
+    val spec: PodSpec,
 ) : Validatable {
-    companion object {
-        val default = Template(Metadata.default, containers = emptyList(), restartPolicy = null)
-    }
-
     override fun validate() = validation {
-        valid(!containers.isEmpty()) { "Template must contain at least one container ($metadata)" }
     }
 }

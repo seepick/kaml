@@ -45,8 +45,9 @@ data class ConfigMap(
     override val metadata: Metadata,
     val data: Map<String, String>,
 ) : Manifest<Any?>, KamlYamlOutput, Validatable {
-    override val apiVersion = K8sApiVersion.ConfigMap
-    override val kind = ManifestKind.ConfigMap
+
+    override val apiVersion = K8sApiVersion.v1
+    override val kind = ManifestKind("ConfigMap")
     override val spec: Any? = null
 
     override fun toYamlNode() =

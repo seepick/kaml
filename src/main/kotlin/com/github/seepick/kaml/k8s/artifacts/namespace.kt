@@ -39,8 +39,8 @@ class NamespaceDsl : DomainBuilder<Namespace> {
 data class Namespace(
     override val metadata: Metadata
 ) : Manifest<Any?>, KamlYamlOutput, Validatable {
-    override val apiVersion = K8sApiVersion.Namespace
-    override val kind = ManifestKind.Namespace
+    override val apiVersion = K8sApiVersion.v1
+    override val kind = ManifestKind("Namespace")
     override val spec: Any? = null
 
     override fun toYamlNode() =

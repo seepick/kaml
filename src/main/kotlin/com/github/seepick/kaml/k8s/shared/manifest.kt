@@ -9,16 +9,8 @@ interface Manifest<Spec> {
     val spec: Spec
 }
 
-enum class ManifestKind(val yamlValue: String) {
-    Deployment("Deployment"),
-    Pod("Pod"),
-    ConfigMap("ConfigMap"),
-    Service("Service"),
-    Namespace("Namespace"),
-    ResourceQuota("ResourceQuota"),
-    Secret("Secret")
-    // ReplicaSet
-}
+@JvmInline
+value class ManifestKind(val yamlValue: String)
 
 fun <Spec> YamlMapDsl.addManifest(manifest: Manifest<Spec>, skipSpec: Boolean, spec: YamlMapDsl.() -> Unit) {
     add("apiVersion", manifest.apiVersion.yamlValue)

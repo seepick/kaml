@@ -7,6 +7,7 @@ import com.github.seepick.kaml.k8s.artifacts.pod.RestartPolicy
 import com.github.seepick.kaml.k8s.artifacts.pod.pod
 import com.github.seepick.kaml.k8s.k8s
 import com.github.seepick.kaml.k8s.shared.Gi
+import com.github.seepick.kaml.k8s.shared.HostPathType
 import com.github.seepick.kaml.k8s.shared.Mi
 import com.github.seepick.kaml.k8s.shared.cpu
 import com.github.seepick.kaml.k8s.shared.milliCpu
@@ -47,6 +48,8 @@ class PodTest : DescribeSpec({
                         containerPort = 80
                         name = "my-portname"
                     }
+                    command += listOf("/bin/sh", "-c")
+                    arguments += "while true; do echo hello; sleep 10;done"
                     readinessProbe {
                         httpGet(path = "/ready", port = 81)
                     }
@@ -66,6 +69,17 @@ class PodTest : DescribeSpec({
                             memory = 1.Gi
                         }
                     }
+                    volumeMount {
+                        name = "my-volume"
+                        mountPath = "/my/local"
+                    }
+                }
+                volume {
+                    name = "my-volume"
+                }
+                hostPath {
+                    path = "/my/host"
+                    type = HostPathType.Directory
                 }
             }.toYaml() shouldBeEqual """
                 apiVersion: v1
@@ -80,6 +94,11 @@ class PodTest : DescribeSpec({
                   containers:
                     - name: my-containername
                       image: my-imagename:my-imageVersion
+                      command:
+                        - "/bin/sh"
+                        - "-c"
+                      args:
+                        - "while true; do echo hello; sleep 10;done"
                       ports:
                         - name: my-portname
                           containerPort: 80
@@ -101,6 +120,14 @@ class PodTest : DescribeSpec({
                         limits:
                           cpu: 500m
                           memory: 1Gi
+                      volumeMounts:
+                        - name: my-volume
+                          mountPath: /my/local
+                  volumes:
+                    - name: my-volume
+                  hostPath:
+                    path: /my/host
+                    type: Directory
             """.trimIndent()
         }
 
@@ -121,6 +148,17 @@ class PodTest : DescribeSpec({
 //                |              key: MY_ENV_VAR_KEY
 //            """.trimMargin()
 //        }
+        // ... and:
+        /*
+        metadata:
+          name: xxx
+        ...
+        env:
+          - name: FOO
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+         */
         it("env from configmap") {
             Kaml.k8s.pod {
                 container {
