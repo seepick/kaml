@@ -20,8 +20,11 @@ fun List<Pair<KamlYamlOutput, String>>.saveAll(targetFolder: File) {
         targetYamlFile.writeText(manifest.toYaml())
         println("Saved: ${targetYamlFile.absolutePath}")
     }
-    println(
-        "All manifests successfully saved.\n" +
-                "You can now apply them with: `kubectl apply -R -f ${targetFolder.absolutePath}` (--dry-run=client)"
-    ) // TODO doesn't it require a specific order?!
+    println()
+    println("✅ All manifests saved successfully. You can now apply them with:")
+    println()
+    println("kubectl apply -R \\")
+    println("${joinToString(" \\\n") { "  -f ${File(targetFolder.absolutePath, it.second).absolutePath}" }} \\")
+    println("  --dry-run=client")
+    println()
 }

@@ -11,13 +11,16 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.should
+import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldContainIgnoringCase
 
 
 class DeploymentTest : DescribeSpec({
     describe("general tests") {
-        it("empty should not throw Because validation disabled by default") {
-            Kaml.k8s.deployment {}
+        it("minimum") {
+            Kaml.k8s.deployment {
+                template { }
+            }
         }
         it("full deployment") {
             Kaml.k8s.deployment {
@@ -72,7 +75,7 @@ class DeploymentTest : DescribeSpec({
                 }
             }.validationResult.issues should {
                 it.size shouldBeEqual 1
-                it.first().message shouldContainIgnoringCase "template must contain at least one container"
+                it.first().message shouldContain "Pod spec must contain at least one container"
             }
         }
         it("When no container name Then throw") {

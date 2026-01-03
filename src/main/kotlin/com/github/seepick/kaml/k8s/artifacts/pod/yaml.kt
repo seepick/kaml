@@ -12,13 +12,20 @@ internal fun YamlMapDsl.addPodSpec(spec: PodSpec) {
     if (spec.restartPolicy != null) {
         add("restartPolicy", spec.restartPolicy.yamlValue)
     }
+
     addContainers(spec.containers)
+
     if (spec.volumes.isNotEmpty()) {
         seq("volumes") {
             spec.volumes.forEach { volume ->
                 flatMap {
                     add("name", volume.name)
                     addIfNotNull("mountPath", volume.mountPath)
+                    if (volume.claim != null) {
+                        map("persistentVolumeClaim") {
+                            add("claimName", volume.claim.name)
+                        }
+                    }
                 }
             }
         }

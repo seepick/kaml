@@ -14,6 +14,7 @@ private val demoAppVersion = "2" // "latest"
 private val Image.Companion.demoApp get() = Image("docker.io/library/demo-app", version = demoAppVersion)
 private val podLabel = AppConfig.labels.podLabelKey to "${AppConfig.groupId}-backend"
 
+private val backendPortName = "backend-port"
 fun XK8s.backendDeployment(configMapRef: String, backendPort: Int) = deployment {
     // TODO "kubectl.kubernetes.io/last-applied-configuration" annotation?
     metadata {
@@ -37,6 +38,10 @@ fun XK8s.backendDeployment(configMapRef: String, backendPort: Int) = deployment 
             env {
                 configMaps += configMapRef
                 values += "PORT" to "\"\"$backendPort\"\"" // FIXME quote fix?! otherwise "cannot convert int64 to string"
+            }
+            ports {
+                containerPort = backendPort
+                name = backendPortName
             }
             readinessProbe {
                 httpGet(path = "/ready", port = backendPort)
@@ -68,7 +73,7 @@ fun XK8s.backendService(backendPort: Int) = service {
     type = ServiceType.NodePort // implicitly also a load balancer
     selector += podLabel
     ports {
-        targetPort = backendPort // TODO correct port?!
+        targetPort = backendPort // or: backendPortName
         port = 8080
         nodePort = 30080
     }

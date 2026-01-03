@@ -76,6 +76,9 @@ class PodTest : DescribeSpec({
                 }
                 volume {
                     name = "my-volume"
+                    claim {
+                        name = "my-claim"
+                    }
                 }
                 hostPath {
                     path = "/my/host"
@@ -125,6 +128,8 @@ class PodTest : DescribeSpec({
                           mountPath: /my/local
                   volumes:
                     - name: my-volume
+                      persistentVolumeClaim:
+                        claimName: my-claim
                   hostPath:
                     path: /my/host
                     type: Directory

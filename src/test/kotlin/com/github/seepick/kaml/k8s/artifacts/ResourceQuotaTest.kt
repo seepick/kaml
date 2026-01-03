@@ -12,6 +12,7 @@ class ResourceQuotaTest : StringSpec({
                 name = "my-quota"
             }
             hard {
+                // FIXME implement me
                 pods = 10
                 requestsCpu = "1"
                 limitsCpu = "2"

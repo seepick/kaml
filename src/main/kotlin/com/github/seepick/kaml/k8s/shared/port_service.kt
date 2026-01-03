@@ -39,7 +39,7 @@ class ServicePortDsl {
     var port: Int? = null
     // TODO could add some semantic checks here
     /** where the service forwards requests to; for the pod; defaults to 'port' value */
-    var targetPort: Int? = null
+    var targetPort: Int? = null // TODO can also be a name (deploy.spec.template.port.name)
 
     internal fun build() = ServicePort(
         name = name,

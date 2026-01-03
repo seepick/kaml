@@ -20,7 +20,7 @@ data class Deployment(
     override val spec: DeploymentSpec,
 ) : Manifest<DeploymentSpec>, KamlYamlOutput, Validatable {
 
-    override val apiVersion = K8sApiVersion.v1
+    override val apiVersion = K8sApiVersion.AppsV1
 
     override val kind: ManifestKind = ManifestKind("Deployment")
 

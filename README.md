@@ -30,6 +30,15 @@ Benefits
 PS: A Kotlin DSL offers basically the same level of *conciseness* as a YAML file (speaking in terms of LoC), but its
 advantages actually lies in other areas.
 
+It's basically an approach to solve what Helm (the more complex/powerful alternative to Kustomize) tries to solve about
+the disadvantages of YAML:
+
+* Massive duplication
+* No variables
+* Hard to manage environments (dev/staging/prod)
+* Hard to share reusable deployments
+* Hard to version complex apps
+
 Howto
 ------------------------------------------------------------------------------------------------------------------------
 
@@ -51,8 +60,8 @@ Kaml.k8s.deployment {
         }
         container {
             name = "my-container"
-            // or simply: Image.nginx
             image = Image(name = "my-image", version = "latest")
+            // or simply: Image.nginx
         }
         resources {
             requests {
@@ -67,7 +76,7 @@ Kaml.k8s.deployment {
 Example of a GitHub action with Kaml:
 
 ```kotlin
-githubKaml {
+Kaml.github {
     name = "Continuous"
     triggers {
         onPushBranches("main")
@@ -96,6 +105,10 @@ githubKaml {
 ```
 
 Or get the Yaml string yourself by invoking `toYaml()` and do how it seems fit for you.
+
+For more examples, see
+the [Kubernetes sample setup](https://github.com/seepick/kaml/tree/main/src/test/kotlin/com/github/seepick/kaml/examples/mySetup)
+or any other (integration) tests.
 
 Setup
 ------------------------------------------------------------------------------------------------------------------------
