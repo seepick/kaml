@@ -2,10 +2,13 @@ package com.github.seepick.kaml.k8s.shared
 
 import com.github.seepick.kaml.yaml.YamlMapDsl
 
-interface Manifest<Spec> {
+interface HasMetadata {
+    val metadata: Metadata
+}
+
+interface Manifest<Spec> : HasMetadata {
     val apiVersion: ApiVersion
     val kind: ManifestKind
-    val metadata: Metadata
     val spec: Spec
 }
 

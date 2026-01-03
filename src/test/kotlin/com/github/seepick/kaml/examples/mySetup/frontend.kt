@@ -15,7 +15,7 @@ private val podLabel = AppConfig.labels.podLabelKey to "${AppConfig.groupId}-$ar
 fun XK8s.frontendDeployment(backendServiceHostAndPort: String) = deployment {
     metadata {
         name = "${appConfig.groupId}-$artifactId-deployment"
-        labels += appConfig.labels.teamKamlLabel
+        labels += appConfig.labels.teamKaml
     }
     selector {
         matchLabels += podLabel
@@ -25,7 +25,7 @@ fun XK8s.frontendDeployment(backendServiceHostAndPort: String) = deployment {
         metadata {
             name = "${appConfig.groupId}-$artifactId-pod"
             labels += podLabel
-            labels += appConfig.labels.teamKamlLabel
+            labels += appConfig.labels.teamKaml
         }
         container {
             name = "${appConfig.groupId}-$artifactId-container"
@@ -50,7 +50,7 @@ fun XK8s.frontendDeployment(backendServiceHostAndPort: String) = deployment {
 fun XK8s.frontendService() = service {
     metadata {
         name = "${appConfig.groupId}-$artifactId-service"
-        labels += appConfig.labels.teamKamlLabel
+        labels += appConfig.labels.teamKaml
     }
     // FIXME check type and ports
     type = ServiceType.NodePort // implicitly also a load balancer

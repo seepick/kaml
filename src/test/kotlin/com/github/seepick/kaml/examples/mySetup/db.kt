@@ -21,7 +21,7 @@ data class DbConfig(
 fun XK8s.dbDeployment(groupId: String, dbConfig: DbConfig) = deployment {
     metadata {
         name = "${groupId}-db-deployment"
-        labels += appConfig.labels.teamKamlLabel
+        labels += appConfig.labels.teamKaml
     }
     selector {
         matchLabels += dbPodLabel
@@ -31,7 +31,7 @@ fun XK8s.dbDeployment(groupId: String, dbConfig: DbConfig) = deployment {
         metadata {
             name = "${groupId}-db-pod"
             labels += dbPodLabel
-            labels += appConfig.labels.teamKamlLabel
+            labels += appConfig.labels.teamKaml
         }
         container {
             name = "${groupId}-db-container"
@@ -61,7 +61,7 @@ fun XK8s.dbDeployment(groupId: String, dbConfig: DbConfig) = deployment {
 fun XK8s.dbService(groupId: String, dbConfig: DbConfig) = service {
     metadata {
         name = appConfig.db.serviceName // "${groupId}-db-service"
-        labels += appConfig.labels.teamKamlLabel
+        labels += appConfig.labels.teamKaml
     }
     type = ServiceType.ClusterIP
     selector += dbPodLabel

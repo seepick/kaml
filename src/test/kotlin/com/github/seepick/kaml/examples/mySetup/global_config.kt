@@ -15,7 +15,8 @@ object AppConfig {
 object Labels {
     val podLabelKey = "type"
     // should be applied to all our declarations
-    val teamKamlLabel = "provider" to "team-kaml"
+    val teamKaml = "provider" to "team-kaml"
+    val backendModule = "module" to "backend"
 }
 
 object Db {

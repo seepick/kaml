@@ -19,7 +19,7 @@ fun XK8s.backendDeployment(configMapRef: String, backendPort: Int) = deployment 
     // TODO "kubectl.kubernetes.io/last-applied-configuration" annotation?
     metadata {
         name = "${appConfig.groupId}-$artifactId-deployment"
-        labels += appConfig.labels.teamKamlLabel
+        labels += appConfig.labels.teamKaml
     }
     selector {
         matchLabels += podLabel
@@ -30,7 +30,7 @@ fun XK8s.backendDeployment(configMapRef: String, backendPort: Int) = deployment 
         metadata {
             name = "${appConfig.groupId}-$artifactId-pod"
             labels += podLabel
-            labels += appConfig.labels.teamKamlLabel
+            labels += appConfig.labels.teamKaml
         }
         container {
             name = "${appConfig.groupId}-$artifactId-container"
@@ -68,7 +68,7 @@ fun XK8s.backendDeployment(configMapRef: String, backendPort: Int) = deployment 
 fun XK8s.backendService(backendPort: Int) = service {
     metadata {
         name = "${appConfig.groupId}-$artifactId-service"
-        labels += appConfig.labels.teamKamlLabel
+        labels += appConfig.labels.teamKaml
     }
     type = ServiceType.NodePort // implicitly also a load balancer
     selector += podLabel

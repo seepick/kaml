@@ -4,7 +4,7 @@ import com.github.seepick.kaml.Image
 import com.github.seepick.kaml.KamlKonfig
 import com.github.seepick.kaml.XKaml
 import com.github.seepick.kaml.k8s.artifacts.deployment.Deployment
-import com.github.seepick.kaml.k8s.artifacts.deployment.imageTransformer
+import com.github.seepick.kaml.k8s.artifacts.deployment.kustomize
 import com.github.seepick.kaml.k8s.artifacts.deployment.replicas
 import com.github.seepick.kaml.k8s.artifacts.deployment.spec
 import com.github.seepick.kaml.k8s.k8s
@@ -24,25 +24,14 @@ fun main() {
     val mainConfigMap = k8s.mainConfigMap()
     val backendDeployment = k8s.backendDeployment(mainConfigMap.metadata.name!!, AppConfig.backendPort)
 
+    // KUSTOMIZE DEMO
+    // --------------------------------
     // this is basically what the kustomize patch is all about:
     val backendProdDeployment = Deployment.spec.replicas.set(backendDeployment, 5)
     // or emulate a kustomize image transformer:
-    val backendDeploymentWithTransformedImage = backendDeployment.imageTransformer(
-        containerMatcher = { it.image == Image.demoApp },
-        imageProvider = { Image.demoApp.copy(version = "1.2.3") }
-    )
-
-//    val containersLens = Deployment.spec.template.spec.containers
-//    val oldContainers = containersLens.get(backendDeployment)
-//    val oldContainer = oldContainers.first { it.image == Image.demoApp }
-//    val newContainers = buildList {
-//        addAll(oldContainers)
-//        remove(oldContainer)
-//        add(oldContainer.copy(image = Image.demoApp.copy(version = "1.2.3")))
-//    }
-//    val backendDeploymentWithTransformedImage = Deployment.spec.template.spec.containers.set(
-//        backendDeployment, newContainers
-//    )
+    val backendDeploymentWithTransformedImage =
+        backendDeployment.kustomize.imageTag(imageName = Image.demoApp.name, newImageTagVersion = "1.2.3")
+    // e.g. apply labels/annotations to all kind of artifacts
 
     listOf(
         mainConfigMap to "main.configmap.yaml",
