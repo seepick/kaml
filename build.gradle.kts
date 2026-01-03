@@ -6,6 +6,7 @@ plugins {
     id("io.kotest") // execute `gw kotest` instead `gw test`
 //    id("org.jetbrains.kotlinx.kover")
     id("com.github.ben-manes.versions")
+    id("com.google.devtools.ksp") version "2.3.4" // for optics generation
 }
 
 repositories {
@@ -20,6 +21,10 @@ dependencies {
     implementation(kotlin("reflect"))
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.13")
     runtimeOnly("ch.qos.logback:logback-classic:1.5.18")
+    // implementation(platform("io.arrow-kt:arrow-stack:$arrowVersion"))
+    val arrowVersion = "2.2.1.1"
+    implementation("io.arrow-kt:arrow-optics:$arrowVersion")
+    ksp("io.arrow-kt:arrow-optics-ksp-plugin:$arrowVersion")
 
     listOf("framework-engine", "runner-junit5", "assertions-core", "property").forEach { artifactId ->
         testImplementation("io.kotest:kotest-$artifactId:6.0.7")
@@ -31,8 +36,24 @@ kotlin {
     compilerOptions {
         freeCompilerArgs.add("-Xcontext-parameters")
     }
+    // already done by some (optics?) auto-magic
+//    sourceSets.main {
+//        kotlin.srcDir("build/generated/ksp/main/kotlin")
+//    }
+//    sourceSets.test {
+//        kotlin.srcDir("build/generated/ksp/test/kotlin")
+//    }
 }
-
+/*
+idea {
+    module {
+        // Not using += due to https://github.com/gradle/gradle/issues/8749
+        sourceDirs = sourceDirs + file("build/generated/ksp/main/kotlin") // or tasks["kspKotlin"].destination
+        testSourceDirs = testSourceDirs + file("build/generated/ksp/test/kotlin")
+        generatedSourceDirs = generatedSourceDirs + file("build/generated/ksp/main/kotlin") + file("build/generated/ksp/test/kotlin")
+    }
+}
+ */
 java {
     withSourcesJar()
 }

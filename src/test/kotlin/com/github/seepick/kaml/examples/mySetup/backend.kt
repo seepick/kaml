@@ -11,7 +11,7 @@ import com.github.seepick.kaml.k8s.shared.milliCpu
 
 private val artifactId = "backend"
 private val demoAppVersion = "2" // "latest"
-private val Image.Companion.demoApp get() = Image("docker.io/library/demo-app", version = demoAppVersion)
+val Image.Companion.demoApp get() = Image("docker.io/library/demo-app", version = demoAppVersion)
 private val podLabel = AppConfig.labels.podLabelKey to "${AppConfig.groupId}-backend"
 
 private val backendPortName = "backend-port"

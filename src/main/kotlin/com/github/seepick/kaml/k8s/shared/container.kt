@@ -1,5 +1,6 @@
 package com.github.seepick.kaml.k8s.shared
 
+import arrow.optics.optics
 import com.github.seepick.kaml.Image
 import com.github.seepick.kaml.ImageFormatter
 import com.github.seepick.kaml.KamlDsl
@@ -8,6 +9,7 @@ import com.github.seepick.kaml.validation.invalid
 import com.github.seepick.kaml.validation.validation
 import com.github.seepick.kaml.yaml.YamlMapDsl
 
+@optics
 data class Container(
     val image: Image,
     /** Mandatory by k8s */
@@ -25,6 +27,8 @@ data class Container(
     override fun validate() = validation {
         valid(name.isNotEmpty()) { "Container name must not be empty" }
     }
+
+    companion object {} // for optics
 }
 
 @KamlDsl

@@ -1,5 +1,6 @@
 package com.github.seepick.kaml.k8s.artifacts.pod
 
+import arrow.optics.optics
 import com.github.seepick.kaml.KamlYamlOutput
 import com.github.seepick.kaml.k8s.shared.ApiVersion
 import com.github.seepick.kaml.k8s.shared.Container
@@ -27,6 +28,7 @@ data class Pod(
     override fun validate() = ValidationResult.Valid
 }
 
+@optics
 data class PodSpec(
     val containers: List<Container>,
     // dnsPolicy = ClusterFirst, ...
@@ -37,6 +39,8 @@ data class PodSpec(
     override fun validate() = validation {
         valid(!containers.isEmpty()) { "Pod spec must contain at least one container!" }
     }
+
+    companion object {} // for optics
 }
 
 enum class RestartPolicy(val yamlValue: String) {

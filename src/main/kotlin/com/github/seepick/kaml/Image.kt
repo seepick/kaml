@@ -1,5 +1,6 @@
 package com.github.seepick.kaml
 
+import arrow.optics.optics
 import com.github.seepick.kaml.github.domain.RuntimeImage
 
 interface Image {
@@ -35,11 +36,14 @@ interface Image {
     }
 }
 
+@optics
 data class GenericImage(
     override val name: String,
     override val group: String?,
     override val version: String?,
-) : Image
+) : Image {
+    companion object {} // for optics
+}
 
 enum class ImageFormatter(
     val groupNameSplitSymbol: String,
