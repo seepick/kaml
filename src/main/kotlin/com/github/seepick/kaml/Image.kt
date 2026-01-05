@@ -3,6 +3,7 @@ package com.github.seepick.kaml
 import arrow.optics.optics
 import com.github.seepick.kaml.github.domain.RuntimeImage
 
+// FIXME merge with GenericImage; refactor RuntimeImage thingy
 interface Image {
     val group: String?
     val name: String

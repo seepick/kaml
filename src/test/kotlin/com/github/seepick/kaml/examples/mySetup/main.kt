@@ -24,7 +24,7 @@ fun main() {
     val mainConfigMap = k8s.mainConfigMap()
     val backendDeployment = k8s.backendDeployment(mainConfigMap.metadata.name!!, AppConfig.backendPort)
 
-    // KUSTOMIZE DEMO
+    // KUSTOMIZE DEMO (a super powerful patch alternative)
     // --------------------------------
     // this is basically what the kustomize patch is all about:
     val backendProdDeployment = Deployment.spec.replicas.set(backendDeployment, 5)
@@ -46,9 +46,8 @@ fun main() {
         .saveAll(targetFolder = File("build/k8s"))
 }
 
-
 private fun AppConfig.toDbConfig() = DbConfig(
-    user = AppConfig.db.userPass.first,
-    pass = AppConfig.db.userPass.second,
-    port = AppConfig.db.port,
+    user = db.userPass.first,
+    pass = db.userPass.second,
+    port = db.port,
 )

@@ -2,6 +2,8 @@ package com.github.seepick.kaml
 
 import java.io.File
 
+fun List<KamlYamlOutput>.toYamls(): String = joinToString("\n---\n") { it.toYaml() }
+
 fun List<Pair<KamlYamlOutput, String>>.saveMerged(targetFile: File) {
     val yaml = joinToString("\n---\n") { (manifest, yamlName) -> "# ${yamlName}\n" + manifest.toYaml() }
     targetFile.writeText(yaml)

@@ -2,9 +2,9 @@ package com.github.seepick.kaml.k8s.artifacts
 
 import com.github.seepick.kaml.Image
 import com.github.seepick.kaml.Kaml
-import com.github.seepick.kaml.k8s.any
 import com.github.seepick.kaml.k8s.artifacts.pod.RestartPolicy
 import com.github.seepick.kaml.k8s.artifacts.pod.pod
+import com.github.seepick.kaml.k8s.image
 import com.github.seepick.kaml.k8s.k8s
 import com.github.seepick.kaml.k8s.shared.Gi
 import com.github.seepick.kaml.k8s.shared.HostPathType
@@ -14,6 +14,8 @@ import com.github.seepick.kaml.k8s.shared.milliCpu
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.string.shouldContain
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.next
 
 class PodTest : DescribeSpec({
     describe("simple test") {
@@ -168,7 +170,7 @@ class PodTest : DescribeSpec({
             Kaml.k8s.pod {
                 container {
                     name = "anyContainer"
-                    image = Image.any()
+                    image = Arb.image().next()
                     env {
                         configMaps += "my-configmap"
                     }
@@ -198,7 +200,7 @@ class PodTest : DescribeSpec({
             Kaml.k8s.pod {
                 container {
                     name = "anyContainer"
-                    image = Image.any()
+                    image = Arb.image().next()
                     env {
                         secrets += "my-secret"
                     }
